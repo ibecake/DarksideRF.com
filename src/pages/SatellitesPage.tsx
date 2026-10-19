@@ -1,3 +1,4 @@
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { catalogue, satellites } from "../data/catalogue";
 import { simplestAntenna, stationCovers } from "../data/equipment";
@@ -6,14 +7,26 @@ import { formatFrequency } from "../lib/format";
 
 export function SatellitesPage() {
   const { store } = useLogbook();
+  const [query, setQuery] = useState("");
+  const shown = useMemo(() => {
+    const needle = query.trim().toLowerCase();
+    if (!needle) return satellites;
+    return satellites.filter((satellite) =>
+      satellite.name.toLowerCase().includes(needle)
+      || String(satellite.norad).includes(needle)
+      || satellite.aliases.some((alias) => alias.toLowerCase().includes(needle))
+      || satellite.transmitters.some((item) => formatFrequency(item.downlinkHz).toLowerCase().includes(needle)),
+    );
+  }, [query]);
   return (
     <section className="panel">
       <p className="eyebrow">Darkside RF / Catalogue</p>
       <h1>Satellites</h1>
-      <p className="lede">A first catalogue of {satellites.length} satellites with a cited SatNOGS downlink and a current CelesTrak element set. Not every satellite in orbit, and not a claim that each one is transmitting now.</p>
+      <p className="lede">{satellites.length.toLocaleString()} satellites with an active SatNOGS downlink and a current CelesTrak orbit. A listing is a frequency record. It is not a promise the transmitter is on.</p>
+      <p><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search name, NORAD, or frequency" aria-label="Search satellites" /></p>
       <p className="muted">Orbits: {catalogue.orbitSource}. Transmitters: {catalogue.transmitterSource}. Snapshot {catalogue.retrievedAt}.</p>
       <ul className="directory">
-        {satellites.map((satellite) => {
+        {shown.map((satellite) => {
           const collected = store.logs.some((log) => log.satelliteId === satellite.id);
           const primary = satellite.transmitters.find((item) => stationCovers(store.profile.receiverIds, store.profile.antennaId, item.downlinkHz)) ?? satellite.transmitters[0];
           const receivable = satellite.transmitters.some((item) => stationCovers(store.profile.receiverIds, store.profile.antennaId, item.downlinkHz));

@@ -7,7 +7,7 @@ Phase 1 is a static React app. Pushing `main` builds it and publishes GitHub Pag
 ## What is real
 
 - Orbits are a CelesTrak GP snapshot in `src/data/catalogue.json`.
-- Downlinks are cited SatNOGS records from that same snapshot. Frequencies are not filled in from memory.
+- Downlinks are active SatNOGS records from that same snapshot. Unconfirmed records are left out. Frequencies are not filled in from memory.
 - Passes are predicted in a web worker with satellite.js and SGP4.
 - The default station is Cork, a HackRF One, an SDRplay RSPduo and a generic VHF/UHF whip.
 - The ARISS SSTV Series 34 entry uses the published date window. Exact UTC times were not announced, so matching passes are labelled potential.

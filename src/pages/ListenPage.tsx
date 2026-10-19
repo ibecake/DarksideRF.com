@@ -32,10 +32,11 @@ export function ListenPage() {
   const { store, toggleWatch, addLog, addReminder } = useLogbook();
   const { profile } = store;
   const [window, setWindow] = useState<TimeWindow>("6h");
+  const [query, setQuery] = useState("");
   const [openId, setOpenId] = useState<string | null>(null);
   const [logging, setLogging] = useState<{ satelliteId: string; transmitterId: string | null; eventId: string | null } | null>(null);
   const range = useMemo(() => rangeFor(window, profile.timeZone), [window, profile.timeZone]);
-  const { passes, pending } = usePasses({
+  const { passes, pending, completed, total } = usePasses({
     latitude: profile.latitude,
     longitude: profile.longitude,
     heightKm: profile.heightKm,
@@ -71,6 +72,15 @@ export function ListenPage() {
       return a.satellite.name.localeCompare(b.satellite.name);
     });
   }, [passes, profile.antennaId, profile.receiverIds, profile.timeZone]);
+  const shown = useMemo(() => {
+    const needle = query.trim().toLowerCase();
+    if (!needle) return cards;
+    return cards.filter((card) =>
+      card.satellite.name.toLowerCase().includes(needle)
+      || String(card.satellite.norad).includes(needle)
+      || card.satellite.aliases.some((alias) => alias.toLowerCase().includes(needle)),
+    );
+  }, [cards, query]);
 
   return (
     <section className="panel">
@@ -95,10 +105,11 @@ export function ListenPage() {
           </button>
         ))}
         <Link to="/my-equipment">Change station</Link>
+        <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search satellites" aria-label="Search satellites" />
       </div>
-      {pending && <p className="muted">Calculating passes…</p>}
+      {pending && <p className="muted">Calculating passes… {completed > 0 ? `${completed} of ${total}` : ""}</p>}
       <div className="stack">
-        {cards.map((card) => {
+        {shown.map((card) => {
           const cardId = `${card.satellite.id}-${card.pass?.aos ?? "none"}`;
           return (
             <PassCard

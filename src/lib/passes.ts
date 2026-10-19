@@ -59,6 +59,7 @@ export function predictPasses(
   longitude: number,
   heightKm: number,
   minElevation: number,
+  options?: { stepMs?: number; maxPasses?: number },
 ): PassPrediction[] {
   const satrec = json2satrec(satellite.omm as Parameters<typeof json2satrec>[0]);
   const observer = {
@@ -66,7 +67,8 @@ export function predictPasses(
     latitude: degreesToRadians(latitude),
     height: heightKm,
   };
-  const stepMs = 10_000;
+  const stepMs = options?.stepMs ?? 10_000;
+  const maxPasses = options?.maxPasses ?? Number.POSITIVE_INFINITY;
   const searchStart = new Date(start.getTime() - 20 * 60_000);
   const passes: PassPrediction[] = [];
   let previous: Look | null = null;
@@ -122,6 +124,7 @@ export function predictPasses(
         });
       }
       open = null;
+      if (passes.length >= maxPasses) break;
     }
     previous = look;
     previousTime = date;
