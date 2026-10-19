@@ -46,6 +46,8 @@ button.on, button:not(.ghost) {
   margin: 1.5rem auto 3rem;
 }
 
+h2, .pass h2 a { overflow-wrap: anywhere; }
+
 .top {
   display: flex;
   justify-content: space-between;
@@ -177,7 +179,7 @@ a.pill { text-decoration: none; }
   font-size: 0.88rem;
 }
 
-.pass-layout { display: grid; grid-template-columns: 1fr 180px; gap: 0.8rem; align-items: start; }
+.pass-layout { display: grid; grid-template-columns: minmax(0, 1fr) 180px; gap: 0.8rem; align-items: start; }
 .sky { margin: 0.4rem 0 0; }
 .sky svg { width: 100%; max-width: 200px; height: auto; }
 .sky .ring { fill: none; stroke: #555; stroke-width: 1; }
@@ -219,19 +221,38 @@ button.map-pick {
   gap: 0.2rem;
 }
 
-.tune-wrap { margin: 0.7rem 0 0.2rem; }
+.tune-wrap { margin: 0.7rem 0 0.2rem; min-width: 0; }
+.expect {
+  display: grid;
+  gap: 0.12rem;
+  margin: 0 0 0.55rem;
+  padding: 0.5rem 0.7rem 0.55rem;
+  border-left: 3px solid var(--green);
+  background: #101612;
+  border-radius: 0 10px 10px 0;
+}
+.expect span {
+  color: var(--muted);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.expect strong { font-size: 1.08rem; font-weight: 600; }
+.expect p { margin: 0; color: #d5d5d5; font-size: 0.88rem; }
 .tune {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(7.6rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 8.4rem), 1fr));
   gap: 0.4rem;
   margin: 0;
 }
 .tune div {
+  min-width: 0;
   background: #111;
   border: 1px solid var(--line);
   border-radius: 10px;
   padding: 0.35rem 0.5rem 0.45rem;
 }
+.tune-span { grid-column: 1 / -1; }
 .tune dt {
   margin: 0;
   color: var(--muted);
@@ -243,15 +264,18 @@ button.map-pick {
   margin: 0.12rem 0 0;
   font-size: 0.98rem;
   font-variant-numeric: tabular-nums;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 }
-.tune-main dd { font-size: 1.15rem; }
+.tune-main dd { font-size: 1.2rem; white-space: nowrap; }
 .tune-note { font-size: 0.78rem; margin: 0.35rem 0 0; }
+.also { display: flex; flex-wrap: wrap; gap: 0.2rem 0.35rem; align-items: baseline; }
+.also span:not(.also-label) { white-space: nowrap; }
+.also span:not(.also-label):not(:last-child)::after { content: " ·"; }
 .spec-line { display: flex; flex-wrap: wrap; gap: 0.35rem 0.75rem; align-items: baseline; margin: 0; }
 .build-steps { padding-left: 1.2rem; display: grid; gap: 0.55rem; }
 
 .filters, .row { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin: 1rem 0; }
-.filters input { min-width: 16rem; }
+.filters input { flex: 1 1 12rem; min-width: 0; width: auto; }
 .stack { display: grid; gap: 0.8rem; }
 
 .pass, .log-form {
@@ -273,6 +297,8 @@ button.map-pick {
   padding: 0.75rem 0;
   border-bottom: 1px solid var(--line);
 }
+.transmitters li { align-items: flex-start; }
+.transmitters li > button { flex: none; margin-top: 0.7rem; }
 .directory a, .directory li > div, .transmitters div, .logs div { display: grid; gap: 0.25rem; text-decoration: none; }
 .directory span, .logs span, .transmitters span { color: var(--muted); font-size: 0.88rem; }
 
@@ -291,6 +317,19 @@ input, select, textarea {
 .achievements .earned { color: var(--ink); }
 
 @media (max-width: 720px) {
+  .frame { width: min(980px, calc(100% - 1rem)); margin: 0.6rem auto 2rem; }
+  .panel { padding: 1rem 0.8rem 0.9rem; border-radius: 14px; }
+  .banner { font-size: 0.82rem; }
   .card-grid, .stats, .pass-layout, .map-layout { grid-template-columns: 1fr; }
-  .top, .panel-head, .logs li, .directory li { align-items: flex-start; flex-direction: column; }
+  .top, .panel-head, .logs li, .directory li, .transmitters li { align-items: flex-start; flex-direction: column; }
+  .filters input { flex-basis: 100%; }
+  .pass { padding: 0.85rem; }
+  .pass .row { display: grid; grid-template-columns: 1fr 1fr; }
+  .pass .row button { width: 100%; min-height: 2.6rem; font-size: 0.86rem; padding: 0.4rem 0.3rem; }
+  .tune { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pass-layout { justify-items: stretch; }
+  .sky { text-align: center; }
+  .sky svg { margin-inline: auto; }
+  .transmitters li > button { align-self: flex-start; }
+  .tle { font-size: 0.68rem; }
 }

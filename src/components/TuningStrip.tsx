@@ -1,9 +1,17 @@
 import { formatDial, formatFrequency, formatSpan } from "../lib/format";
+import { expectedOutcome } from "../lib/outcome";
 import { suggestedTuning } from "../lib/tuning";
 import type { Transmitter } from "../types";
 
+function cellClass(label: string): string | undefined {
+  if (label === "Frequency") return "tune-span tune-main";
+  if (label === "Dial") return "tune-span";
+  return undefined;
+}
+
 export function TuningStrip({ transmitter, dialHz }: { transmitter: Transmitter; dialHz?: number | null }) {
   const tuning = suggestedTuning(transmitter);
+  const outcome = expectedOutcome(transmitter);
   const cells: { label: string; value: string }[] = [
     { label: "Frequency", value: formatFrequency(transmitter.downlinkHz) },
     { label: "Mode", value: transmitter.mode ?? "—" },
@@ -16,9 +24,14 @@ export function TuningStrip({ transmitter, dialHz }: { transmitter: Transmitter;
 
   return (
     <div className="tune-wrap">
+      <div className="expect">
+        <span>Expected result</span>
+        <strong>{outcome.label}</strong>
+        <p>{outcome.detail}</p>
+      </div>
       <dl className="tune">
         {cells.map((cell) => (
-          <div key={cell.label} className={cell.label === "Frequency" ? "tune-main" : undefined}>
+          <div key={cell.label} className={cellClass(cell.label)}>
             <dt>{cell.label}</dt>
             <dd>{cell.value}</dd>
           </div>

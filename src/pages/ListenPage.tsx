@@ -10,6 +10,7 @@ import { usePasses } from "../hooks/usePasses";
 import { useLogbook } from "../hooks/useStore";
 import { civilDate, dopplerShiftHz, formatAzimuth, formatClock, formatDuration, formatElevation, formatFrequency, formatWhen, zonedParts, zonedTimeToUtc } from "../lib/format";
 import { howToListen } from "../lib/guidance";
+import { expectedOutcome } from "../lib/outcome";
 import { assess, bestTransmitter } from "../lib/listenability";
 import type { AntennaModel, PassPrediction, TimeWindow, Transmitter } from "../types";
 
@@ -198,9 +199,12 @@ function PassCard(props: {
       </div>
       {props.transmitter && <TuningStrip transmitter={props.transmitter} dialHz={shift === null ? null : props.transmitter.downlinkHz + shift} />}
       {others.length > 0 && (
-        <p className="muted">
-          Also {others.slice(0, 4).map((item) => `${formatFrequency(item.downlinkHz)} ${item.mode ?? ""}`.trim()).join(" · ")}
-          {others.length > 4 ? ` · +${others.length - 4} more` : ""}
+        <p className="also muted">
+          <span className="also-label">Also</span>
+          {others.slice(0, 4).map((item) => (
+            <span key={item.id}>{formatFrequency(item.downlinkHz)} {expectedOutcome(item).label}</span>
+          ))}
+          {others.length > 4 && <span>+{others.length - 4} more</span>}
         </p>
       )}
       <div className="pass-layout">
