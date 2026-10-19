@@ -18,11 +18,21 @@ export default defineConfig({
   plugins: [
     react(),
     {
+      name: "github-pages-base",
+      transformIndexHtml: {
+        order: "post",
+        handler(html) {
+          const script = `<script>(function(){var project="/DarksideRF.com";var path=location.pathname;var href=path===project||path.indexOf(project+"/")===0?project+"/":"/";document.write('<base href="'+href+'">');})();</script>`;
+          return html.replace("<head>", `<head>\n    ${script}`);
+        },
+      },
+    },
+    {
       name: "github-pages-spa-fallback",
       closeBundle() {
         copyFileSync("dist/index.html", "dist/404.html");
       },
     },
   ],
-  base: "/",
+  base: "./",
 });
