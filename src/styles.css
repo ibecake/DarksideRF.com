@@ -185,7 +185,68 @@ a.pill { text-decoration: none; }
 .sky .mark { fill: #3ddc84; stroke: none; }
 .sky text { fill: #8d8d8d; font-size: 11px; text-anchor: middle; font-family: inherit; }
 .sky figcaption { color: var(--muted); font-size: 0.78rem; margin-top: 0.25rem; }
+.now-sky svg { max-width: 220px; }
+.world { width: 100%; height: auto; background: #070b10; border-radius: 12px; display: block; }
+.world .grid { stroke: #1d2a33; stroke-width: 0.35; }
+.world .land { fill: #163042; stroke: #2f5368; stroke-width: 0.25; }
+.world .track { fill: none; stroke: #e7c98a; stroke-width: 0.7; }
+.world .down { fill: #6d7c86; }
+.world .up { fill: #3ddc84; }
+.world .picked { fill: #e7c98a; stroke: #fff; stroke-width: 0.35; }
+.world .you { fill: #f3f3f3; stroke: #e7c98a; stroke-width: 0.45; }
+.world .you-label { fill: #e7c98a; font-size: 3.4px; }
+.world circle { cursor: pointer; }
+.map-layout { display: grid; grid-template-columns: 220px 1fr; gap: 1rem; margin-top: 1rem; align-items: start; }
+.tle {
+  margin: 0.4rem 0 0;
+  padding: 0.7rem 0.8rem;
+  overflow-x: auto;
+  background: #111;
+  border-radius: 10px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+button.map-pick {
+  width: 100%;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  text-align: left;
+  display: grid;
+  gap: 0.2rem;
+}
 
+.tune-wrap { margin: 0.7rem 0 0.2rem; }
+.tune {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7.6rem, 1fr));
+  gap: 0.4rem;
+  margin: 0;
+}
+.tune div {
+  background: #111;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0.35rem 0.5rem 0.45rem;
+}
+.tune dt {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.tune dd {
+  margin: 0.12rem 0 0;
+  font-size: 0.98rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.tune-main dd { font-size: 1.15rem; }
+.tune-note { font-size: 0.78rem; margin: 0.35rem 0 0; }
 .spec-line { display: flex; flex-wrap: wrap; gap: 0.35rem 0.75rem; align-items: baseline; margin: 0; }
 .build-steps { padding-left: 1.2rem; display: grid; gap: 0.55rem; }
 
@@ -230,6 +291,6 @@ input, select, textarea {
 .achievements .earned { color: var(--ink); }
 
 @media (max-width: 720px) {
-  .card-grid, .stats, .pass-layout { grid-template-columns: 1fr; }
+  .card-grid, .stats, .pass-layout, .map-layout { grid-template-columns: 1fr; }
   .top, .panel-head, .logs li, .directory li { align-items: flex-start; flex-direction: column; }
 }

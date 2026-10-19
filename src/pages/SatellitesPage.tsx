@@ -1,9 +1,11 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { TleBlock } from "../components/TleBlock";
 import { catalogue, satellites } from "../data/catalogue";
 import { simplestAntenna, stationCovers } from "../data/equipment";
 import { useLogbook } from "../hooks/useStore";
 import { formatFrequency } from "../lib/format";
+import { catalogueTle } from "../lib/tle";
 
 export function SatellitesPage() {
   const { store } = useLogbook();
@@ -24,6 +26,8 @@ export function SatellitesPage() {
       <h1>Satellites</h1>
       <p className="lede">{satellites.length.toLocaleString()} satellites with an active SatNOGS downlink and a current CelesTrak orbit. A listing is a frequency record. It is not a promise the transmitter is on.</p>
       <p><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search name, NORAD, or frequency" aria-label="Search satellites" /></p>
+      <TleBlock text={catalogueTle(satellites)} fileName="darksiderf.tle" preview={false} label="Copy all TLEs" />
+      <p className="muted">The file is a GPredict catalogue: one name and two element lines for each satellite.</p>
       <p className="muted">Orbits: {catalogue.orbitSource}. Transmitters: {catalogue.transmitterSource}. Snapshot {catalogue.retrievedAt}.</p>
       <ul className="directory">
         {shown.map((satellite) => {

@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { LogForm } from "../components/LogForm";
 import { PassSky } from "../components/PassSky";
+import { TuningStrip } from "../components/TuningStrip";
 import { events } from "../data/events";
 import { satellites } from "../data/catalogue";
 import { antennaById, simplestAntenna, stationCovers } from "../data/equipment";
@@ -119,6 +120,7 @@ export function ListenPage() {
               satelliteId={card.satellite.id}
               norad={card.satellite.norad}
               transmitter={card.transmitter}
+              transmitters={card.satellite.transmitters}
               suitability={card.assessment?.suitability}
               receiverName={card.assessment?.receiver?.name ?? "No compatible receiver"}
               antennaName={antennaById(profile.antennaId)?.name ?? "Antenna"}
@@ -163,6 +165,7 @@ function PassCard(props: {
   satelliteId: string;
   norad: number;
   transmitter: Transmitter | null;
+  transmitters: Transmitter[];
   suitability?: string;
   receiverName: string;
   antennaName: string;
@@ -181,6 +184,7 @@ function PassCard(props: {
   onLog: () => void;
 }) {
   const shift = props.pass && props.transmitter ? dopplerShiftHz(props.transmitter.downlinkHz, props.pass.dopplerFactor) : null;
+  const others = props.transmitters.filter((item) => item.id !== props.transmitter?.id);
   return (
     <article className="pass">
       <div className="pass-top">
@@ -188,13 +192,17 @@ function PassCard(props: {
           <h2>
             <Link to={`/satellite/${props.satelliteId}`}>{props.name}</Link>
           </h2>
-          <p className="muted">
-            NORAD {props.norad}
-            {props.transmitter ? ` · ${formatFrequency(props.transmitter.downlinkHz)} ${props.transmitter.mode}` : ""}
-          </p>
+          <p className="muted">NORAD {props.norad}</p>
         </div>
         <span className={`pill ${props.receivable ? "decoded" : "missing"}`}>{props.receivable ? "Receivable" : "Not receivable"}</span>
       </div>
+      {props.transmitter && <TuningStrip transmitter={props.transmitter} dialHz={shift === null ? null : props.transmitter.downlinkHz + shift} />}
+      {others.length > 0 && (
+        <p className="muted">
+          Also {others.slice(0, 4).map((item) => `${formatFrequency(item.downlinkHz)} ${item.mode ?? ""}`.trim()).join(" · ")}
+          {others.length > 4 ? ` · +${others.length - 4} more` : ""}
+        </p>
+      )}
       <div className="pass-layout">
         <div>
           {props.pass ? (

@@ -4,6 +4,27 @@ export function formatFrequency(hz: number): string {
   return `${(hz / 1e3).toFixed(1)} kHz`;
 }
 
+export function formatDial(hz: number): string {
+  const abs = Math.abs(hz);
+  const sign = hz < 0 ? "−" : "";
+  if (abs >= 1e9) return `${sign}${(abs / 1e9).toFixed(6)} GHz`;
+  if (abs >= 1e6) return `${sign}${(abs / 1e6).toFixed(4)} MHz`;
+  return `${sign}${(abs / 1e3).toFixed(1)} kHz`;
+}
+
+export function formatSpan(hz: number): string {
+  const abs = Math.abs(hz);
+  if (abs >= 1e6) {
+    const mhz = abs / 1e6;
+    return `${Number.isInteger(mhz) ? mhz.toFixed(0) : mhz.toFixed(1)} MHz`;
+  }
+  if (abs >= 1000) {
+    const khz = abs / 1000;
+    return `${Number.isInteger(khz) ? khz.toFixed(0) : khz.toFixed(1)} kHz`;
+  }
+  return `${Math.round(abs)} Hz`;
+}
+
 export function formatWhen(iso: string, timeZone: string): string {
   return new Intl.DateTimeFormat("en-IE", {
     timeZone,

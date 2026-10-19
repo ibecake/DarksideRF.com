@@ -4,6 +4,7 @@ const links = [
   ["/listen", "Listen"],
   ["/events", "Events"],
   ["/satellites", "Satellites"],
+  ["/map", "Map"],
   ["/signals", "Signals"],
   ["/collection", "Collection"],
   ["/equipment", "Equipment"],

@@ -2,12 +2,15 @@ import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { LogForm } from "../components/LogForm";
 import { PassSky } from "../components/PassSky";
+import { TleBlock } from "../components/TleBlock";
+import { TuningStrip } from "../components/TuningStrip";
 import { catalogue, satelliteById } from "../data/catalogue";
 import { simplestAntenna, stationCovers } from "../data/equipment";
 import { usePasses } from "../hooks/usePasses";
 import { useLogbook } from "../hooks/useStore";
-import { formatFrequency, formatWhen } from "../lib/format";
+import { formatWhen } from "../lib/format";
 import { howToListen } from "../lib/guidance";
+import { tleFor } from "../lib/tle";
 
 export function SatellitePage() {
   const { id = "" } = useParams();
@@ -62,12 +65,12 @@ export function SatellitePage() {
         <button type="button" className="ghost" onClick={() => toggleWatch(satellite.id)}>{watched ? "On watchlist" : "Add to watchlist"}</button>
       </div>
       <h2>Downlinks</h2>
-      <p className="muted">From SatNOGS, retrieved {catalogue.retrievedAt}. Only cited active records are shown.</p>
+      <p className="muted">Active SatNOGS records retrieved {catalogue.retrievedAt}.</p>
       <ul className="transmitters">
         {satellite.transmitters.map((transmitter) => (
           <li key={transmitter.id}>
             <div>
-              <strong>{formatFrequency(transmitter.downlinkHz)} {transmitter.mode}</strong>
+              <TuningStrip transmitter={transmitter} />
               <span>{transmitter.description}</span>
               <a href={transmitter.citation}>Source</a>
             </div>
@@ -82,8 +85,10 @@ export function SatellitePage() {
           ))}
         </ul>
       )}
-      <h2>Orbit</h2>
-      <p className="muted">CelesTrak GP element set. Epoch {satellite.omm.EPOCH}. Retrieved {catalogue.retrievedAt}.</p>
+      <h2>TLE for GPredict</h2>
+      <p className="muted">Three-line elements from the CelesTrak snapshot. Epoch {satellite.omm.EPOCH}. Paste this into GPredict, or download the file and add it as a TLE source.</p>
+      <TleBlock text={tleFor(satellite)} fileName={`${satellite.id}.tle`} />
+      <p><Link to="/map">See it on the map</Link></p>
       <h2>Next passes above {store.profile.minElevation}°</h2>
       {pending && <p className="muted">Calculating…</p>}
       <ul className="logs">

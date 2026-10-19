@@ -9,6 +9,7 @@ import { EquipmentPage } from "./pages/EquipmentPage";
 import { EventsPage } from "./pages/EventsPage";
 import { LearnPage } from "./pages/LearnPage";
 import { ListenPage } from "./pages/ListenPage";
+import { MapPage } from "./pages/MapPage";
 import { MyEquipmentPage } from "./pages/MyEquipmentPage";
 import { SatellitePage } from "./pages/SatellitePage";
 import { SatellitesPage } from "./pages/SatellitesPage";
@@ -25,6 +26,7 @@ export function App() {
           <Route path="/listen" element={<ListenPage />} />
           <Route path="/events" element={<EventsPage />} />
           <Route path="/satellites" element={<SatellitesPage />} />
+          <Route path="/map" element={<MapPage />} />
           <Route path="/satellite/:id" element={<SatellitePage />} />
           <Route path="/signals" element={<SignalsPage />} />
           <Route path="/collection" element={<CollectionPage />} />
