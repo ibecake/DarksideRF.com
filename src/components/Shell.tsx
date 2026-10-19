@@ -1,4 +1,4 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { Link, NavLink, Outlet } from "react-router-dom";
 
 const links = [
   ["/listen", "Listen"],
@@ -16,7 +16,9 @@ export function Shell() {
     <div className="frame">
       <p className="banner">Under construction. The catalogue, passes, and this browser’s logbook work. Accounts and the rest of the station are not finished.</p>
       <header className="top">
-        <p className="brand">DarksideRF</p>
+        <Link to="/listen" className="brand">
+          <img src={`${import.meta.env.BASE_URL}logo.jpg`} alt="DarksideRF" width="132" height="132" />
+        </Link>
         <nav>
           {links.map(([to, label]) => (
             <NavLink key={to} to={to} className={({ isActive }) => (isActive ? "active" : undefined)}>

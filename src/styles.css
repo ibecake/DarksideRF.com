@@ -52,16 +52,20 @@ h2, .pass h2 a { overflow-wrap: anywhere; }
   display: flex;
   justify-content: space-between;
   gap: 1rem;
-  align-items: baseline;
+  align-items: center;
   margin-bottom: 0.75rem;
 }
 
 .brand {
+  display: block;
   margin: 0;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  font-size: 0.72rem;
-  color: var(--muted);
+  line-height: 0;
+  text-decoration: none;
+}
+.brand img {
+  width: 132px;
+  height: 132px;
+  display: block;
 }
 
 nav {
@@ -321,6 +325,7 @@ input, select, textarea {
   .frame { width: min(980px, calc(100% - 1rem)); margin: 0.6rem auto 2rem; }
   .panel { padding: 1rem 0.8rem 0.9rem; border-radius: 14px; }
   .banner { font-size: 0.82rem; }
+  .brand img { width: 112px; height: 112px; }
   .card-grid, .stats, .pass-layout, .map-layout { grid-template-columns: 1fr; }
   .top, .panel-head, .logs li, .directory li, .transmitters li { align-items: flex-start; flex-direction: column; }
   .filters input { flex-basis: 100%; }
