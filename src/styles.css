@@ -275,6 +275,7 @@ button.map-pick {
 .build-steps { padding-left: 1.2rem; display: grid; gap: 0.55rem; }
 
 .filters, .row { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin: 1rem 0; }
+.filters + .filters { margin-top: -0.35rem; }
 .filters input { flex: 1 1 12rem; min-width: 0; width: auto; }
 .stack { display: grid; gap: 0.8rem; }
 

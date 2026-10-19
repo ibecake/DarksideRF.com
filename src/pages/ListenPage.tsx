@@ -9,7 +9,6 @@ import { antennaById, simplestAntenna, stationCovers } from "../data/equipment";
 import { usePasses } from "../hooks/usePasses";
 import { useLogbook } from "../hooks/useStore";
 import { civilDate, dopplerShiftHz, formatAzimuth, formatClock, formatDuration, formatElevation, formatFrequency, formatWhen, zonedParts, zonedTimeToUtc } from "../lib/format";
-import { howToListen } from "../lib/guidance";
 import { expectedOutcome } from "../lib/outcome";
 import { assess, bestTransmitter } from "../lib/listenability";
 import type { AntennaModel, PassPrediction, TimeWindow, Transmitter } from "../types";
@@ -34,8 +33,8 @@ export function ListenPage() {
   const { store, toggleWatch, addLog, addReminder } = useLogbook();
   const { profile } = store;
   const [window, setWindow] = useState<TimeWindow>("6h");
+  const [reach, setReach] = useState<"all" | "receivable" | "hidden">("all");
   const [query, setQuery] = useState("");
-  const [openId, setOpenId] = useState<string | null>(null);
   const [logging, setLogging] = useState<{ satelliteId: string; transmitterId: string | null; eventId: string | null } | null>(null);
   const range = useMemo(() => rangeFor(window, profile.timeZone), [window, profile.timeZone]);
   const { passes, pending, completed, total } = usePasses({
@@ -76,13 +75,15 @@ export function ListenPage() {
   }, [passes, profile.antennaId, profile.receiverIds, profile.timeZone]);
   const shown = useMemo(() => {
     const needle = query.trim().toLowerCase();
-    if (!needle) return cards;
-    return cards.filter((card) =>
-      card.satellite.name.toLowerCase().includes(needle)
-      || String(card.satellite.norad).includes(needle)
-      || card.satellite.aliases.some((alias) => alias.toLowerCase().includes(needle)),
-    );
-  }, [cards, query]);
+    return cards.filter((card) => {
+      if (reach === "receivable" && !card.receivable) return false;
+      if (reach === "hidden" && card.receivable) return false;
+      if (!needle) return true;
+      return card.satellite.name.toLowerCase().includes(needle)
+        || String(card.satellite.norad).includes(needle)
+        || card.satellite.aliases.some((alias) => alias.toLowerCase().includes(needle));
+    });
+  }, [cards, query, reach]);
 
   return (
     <section className="panel">
@@ -106,14 +107,25 @@ export function ListenPage() {
             {label}
           </button>
         ))}
+      </div>
+      <div className="filters">
+        {([
+          ["all", "All"],
+          ["receivable", "Receivable"],
+          ["hidden", "Not receivable"],
+        ] as const).map(([id, label]) => (
+          <button key={id} className={reach === id ? "on" : "ghost"} type="button" onClick={() => setReach(id)}>
+            {label}
+          </button>
+        ))}
         <Link to="/my-equipment">Change station</Link>
+        <Link to="/learn">How to listen</Link>
         <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search satellites" aria-label="Search satellites" />
       </div>
       {pending && <p className="muted">Calculating passes… {completed > 0 ? `${completed} of ${total}` : ""}</p>}
+      {shown.length === 0 && <p className="muted">No satellites match this filter.</p>}
       <div className="stack">
-        {shown.map((card) => {
-          const cardId = `${card.satellite.id}-${card.pass?.aos ?? "none"}`;
-          return (
+        {shown.map((card) => (
             <PassCard
               key={card.satellite.id}
               pass={card.pass}
@@ -128,13 +140,10 @@ export function ListenPage() {
               suggested={card.suggested}
               ownedAntenna={card.suggested?.id === profile.antennaId}
               receivable={card.receivable}
-              reasons={card.assessment?.reasons ?? []}
               timeZone={profile.timeZone}
               minElevation={profile.minElevation}
               eventTitle={card.event?.title}
               watched={store.watchlist.includes(card.satellite.id)}
-              guideOpen={openId === cardId}
-              onGuide={() => setOpenId((current) => (current === cardId ? null : cardId))}
               onWatch={() => toggleWatch(card.satellite.id)}
               onRemind={() => {
                 if (!card.pass) return;
@@ -143,8 +152,7 @@ export function ListenPage() {
               }}
               onLog={() => setLogging({ satelliteId: card.satellite.id, transmitterId: card.transmitter?.id ?? null, eventId: card.event?.id ?? null })}
             />
-          );
-        })}
+        ))}
       </div>
       {logging && (
         <LogForm
@@ -173,13 +181,10 @@ function PassCard(props: {
   suggested: AntennaModel | null;
   ownedAntenna: boolean;
   receivable: boolean;
-  reasons: string[];
   timeZone: string;
   minElevation: number;
   eventTitle?: string;
   watched: boolean;
-  guideOpen: boolean;
-  onGuide: () => void;
   onWatch: () => void;
   onRemind: () => void;
   onLog: () => void;
@@ -253,21 +258,10 @@ function PassCard(props: {
         )}
       </div>
       <div className="row">
-        <button type="button" onClick={props.onGuide} disabled={!props.transmitter}>How to listen</button>
         <button type="button" className="ghost" onClick={props.onRemind} disabled={!props.pass}>Remind me</button>
         <button type="button" className="ghost" onClick={props.onWatch}>{props.watched ? "On watchlist" : "Add to watchlist"}</button>
         <button type="button" className="ghost" onClick={props.onLog}>Log reception</button>
       </div>
-      {props.guideOpen && props.transmitter && (
-        <ul className="guide">
-          {howToListen(props.transmitter.mode, props.transmitter.description).map((line) => (
-            <li key={line}>{line}</li>
-          ))}
-          {props.reasons.map((reason) => (
-            <li key={reason}>{reason}</li>
-          ))}
-        </ul>
-      )}
     </article>
   );
 }

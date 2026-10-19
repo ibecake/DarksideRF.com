@@ -9,7 +9,6 @@ import { simplestAntenna, stationCovers } from "../data/equipment";
 import { usePasses } from "../hooks/usePasses";
 import { useLogbook } from "../hooks/useStore";
 import { formatWhen } from "../lib/format";
-import { howToListen } from "../lib/guidance";
 import { tleFor } from "../lib/tle";
 
 export function SatellitePage() {
@@ -78,13 +77,6 @@ export function SatellitePage() {
           </li>
         ))}
       </ul>
-      {transmitterId && (
-        <ul className="guide">
-          {howToListen(satellite.transmitters.find((item) => item.id === transmitterId)?.mode ?? null, satellite.transmitters.find((item) => item.id === transmitterId)?.description ?? null).map((line) => (
-            <li key={line}>{line}</li>
-          ))}
-        </ul>
-      )}
       <h2>TLE for GPredict</h2>
       <p className="muted">Three-line elements from the CelesTrak snapshot. Epoch {satellite.omm.EPOCH}. Paste this into GPredict, or download the file and add it as a TLE source.</p>
       <TleBlock text={tleFor(satellite)} fileName={`${satellite.id}.tle`} />
