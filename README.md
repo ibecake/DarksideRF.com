@@ -1,25 +1,26 @@
-# DarksideRF.com
+# DarksideRF
 
-Radio experimentation. Static site published to GitHub Pages on every push to `main`.
+Don't just track satellites. Listen to them.
 
-The workflow is [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml). It uploads [`site/`](site/) the same way [boardscout.io](https://github.com/ibecake/boardscout.io) publishes its frontend: GitHub Actions, then Pages.
+Phase 1 is a static React app. Pushing `main` builds it and publishes GitHub Pages, the same way boardscout.io publishes its site. Accounts, Cloudflare Workers and Supabase are later phases. The logbook in this version stays in the browser.
 
-Live site, once DNS points here: https://darksiderf.com
+## What is real
 
-## DNS at Hover
+- Orbits are a CelesTrak GP snapshot in `src/data/catalogue.json`.
+- Downlinks are cited SatNOGS records from that same snapshot. Frequencies are not filled in from memory.
+- Passes are predicted in a web worker with satellite.js and SGP4.
+- The default station is Cork, a HackRF One, an SDRplay RSPduo and a generic VHF/UHF whip.
+- The ARISS SSTV Series 34 entry uses the published date window. Exact UTC times were not announced, so matching passes are labelled potential.
 
-Nameservers are still Hover (`ns1.hover.com` / `ns2.hover.com`). Remove the parking `A` record (`216.40.34.41`) and add:
+The collection screen opens on a labelled example. It is not your log.
 
-| Type | Host | Value |
-|------|------|-------|
-| A | `@` | `185.199.108.153` |
-| A | `@` | `185.199.109.153` |
-| A | `@` | `185.199.110.153` |
-| A | `@` | `185.199.111.153` |
-| AAAA | `@` | `2606:50c0:8000::153` |
-| AAAA | `@` | `2606:50c0:8001::153` |
-| AAAA | `@` | `2606:50c0:8002::153` |
-| AAAA | `@` | `2606:50c0:8003::153` |
-| CNAME | `www` | `ibecake.github.io` |
+## Local
 
-`www` must point at `ibecake.github.io`, not at the repository name.
+```bash
+npm install
+npm run dev
+```
+
+## DNS
+
+The domain still needs the Hover records in the previous setup: four GitHub Pages `A` records, the matching `AAAA` records, and `www` as a `CNAME` to `ibecake.github.io`.
