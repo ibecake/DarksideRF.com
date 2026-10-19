@@ -19,10 +19,12 @@ export function usePasses(query: Query) {
   useEffect(() => {
     const worker = new Worker(new URL("../workers/passes.worker.ts", import.meta.url), { type: "module" });
     setPending(true);
+    setPasses([]);
     worker.onmessage = (event: MessageEvent<PassPrediction[]>) => {
       setPasses(event.data);
       setPending(false);
     };
+    worker.onerror = () => setPending(false);
     worker.postMessage({ ...query, satelliteIds: ids ? ids.split(",") : undefined });
     return () => worker.terminate();
     // The query object is rebuilt by callers; depend on its fields.

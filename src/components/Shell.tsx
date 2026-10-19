@@ -13,6 +13,7 @@ const links = [
 export function Shell() {
   return (
     <div className="frame">
+      <p className="banner">Under construction. The catalogue, passes, and this browser’s logbook work. Accounts and the rest of the station are not finished.</p>
       <header className="top">
         <p className="brand">DarksideRF</p>
         <nav>

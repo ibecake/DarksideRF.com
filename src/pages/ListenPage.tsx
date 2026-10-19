@@ -1,15 +1,16 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { LogForm } from "../components/LogForm";
+import { PassSky } from "../components/PassSky";
 import { events } from "../data/events";
-import { satelliteById } from "../data/catalogue";
-import { antennaById } from "../data/equipment";
+import { satellites } from "../data/catalogue";
+import { antennaById, simplestAntenna, stationCovers } from "../data/equipment";
 import { usePasses } from "../hooks/usePasses";
 import { useLogbook } from "../hooks/useStore";
 import { civilDate, dopplerShiftHz, formatAzimuth, formatClock, formatDuration, formatElevation, formatFrequency, formatWhen, zonedParts, zonedTimeToUtc } from "../lib/format";
 import { howToListen } from "../lib/guidance";
 import { assess, bestTransmitter } from "../lib/listenability";
-import type { PassPrediction, TimeWindow, Transmitter } from "../types";
+import type { AntennaModel, PassPrediction, TimeWindow, Transmitter } from "../types";
 
 function rangeFor(window: TimeWindow, timeZone: string) {
   const now = new Date();
@@ -32,7 +33,7 @@ export function ListenPage() {
   const { profile } = store;
   const [window, setWindow] = useState<TimeWindow>("6h");
   const [openId, setOpenId] = useState<string | null>(null);
-  const [logging, setLogging] = useState<{ satelliteId: string; transmitterId: string; eventId: string | null } | null>(null);
+  const [logging, setLogging] = useState<{ satelliteId: string; transmitterId: string | null; eventId: string | null } | null>(null);
   const range = useMemo(() => rangeFor(window, profile.timeZone), [window, profile.timeZone]);
   const { passes, pending } = usePasses({
     latitude: profile.latitude,
@@ -44,18 +45,30 @@ export function ListenPage() {
   });
 
   const cards = useMemo(() => {
-    return passes.flatMap((pass) => {
-      const satellite = satelliteById(pass.satelliteId);
-      if (!satellite || satellite.transmitters.length === 0) return [];
-      const ranked = satellite.transmitters.map((transmitter) => ({
-        transmitter,
-        assessment: assess(transmitter, pass, profile.receiverIds, profile.antennaId),
-      }));
+    const nextPass = new Map<string, PassPrediction>();
+    for (const pass of passes) {
+      if (!nextPass.has(pass.satelliteId)) nextPass.set(pass.satelliteId, pass);
+    }
+    return satellites.map((satellite) => {
+      const pass = nextPass.get(satellite.id) ?? null;
+      const ranked = pass
+        ? satellite.transmitters.map((transmitter) => ({
+            transmitter,
+            assessment: assess(transmitter, pass, profile.receiverIds, profile.antennaId),
+          }))
+        : [];
       const best = bestTransmitter(ranked);
-      if (!best) return [];
-      const date = civilDate(pass.aos, profile.timeZone);
-      const event = events.find((item) => item.satelliteId === satellite.id && date >= item.startDate && date <= item.endDate);
-      return [{ pass, satellite, ...best, event }];
+      const transmitter = best?.transmitter ?? satellite.transmitters[0] ?? null;
+      const receivable = satellite.transmitters.some((item) => stationCovers(profile.receiverIds, profile.antennaId, item.downlinkHz));
+      const suggested = transmitter ? simplestAntenna(transmitter.downlinkHz) : null;
+      const date = pass ? civilDate(pass.aos, profile.timeZone) : "";
+      const event = pass ? events.find((item) => item.satelliteId === satellite.id && date >= item.startDate && date <= item.endDate) : undefined;
+      return { satellite, pass, transmitter, assessment: best?.assessment ?? null, receivable, suggested, event };
+    }).sort((a, b) => {
+      if (a.pass && b.pass) return a.pass.aos.localeCompare(b.pass.aos);
+      if (a.pass) return -1;
+      if (b.pass) return 1;
+      return a.satellite.name.localeCompare(b.satellite.name);
     });
   }, [passes, profile.antennaId, profile.receiverIds, profile.timeZone]);
 
@@ -84,33 +97,40 @@ export function ListenPage() {
         <Link to="/my-equipment">Change station</Link>
       </div>
       {pending && <p className="muted">Calculating passes…</p>}
-      {!pending && cards.length === 0 && <p className="muted">Nothing in this window clears {profile.minElevation}° with a catalogued downlink.</p>}
       <div className="stack">
-        {cards.map((card) => (
-          <PassCard
-            key={`${card.pass.aos}-${card.transmitter.id}`}
-            pass={card.pass}
-            name={card.satellite.name}
-            satelliteId={card.satellite.id}
-            norad={card.satellite.norad}
-            transmitter={card.transmitter}
-            suitability={card.assessment.suitability}
-            receiverName={card.assessment.receiver?.name ?? "No compatible receiver"}
-            antennaName={antennaById(profile.antennaId)?.name ?? "Antenna"}
-            reasons={card.assessment.reasons}
-            timeZone={profile.timeZone}
-            eventTitle={card.event?.title}
-            watched={store.watchlist.includes(card.satellite.id)}
-            guideOpen={openId === `${card.pass.aos}-${card.transmitter.id}`}
-            onGuide={() => setOpenId((current) => (current === `${card.pass.aos}-${card.transmitter.id}` ? null : `${card.pass.aos}-${card.transmitter.id}`))}
-            onWatch={() => toggleWatch(card.satellite.id)}
-            onRemind={() => {
-              const fireAt = new Date(new Date(card.pass.aos).getTime() - 15 * 60_000).toISOString();
-              addReminder({ satelliteId: card.satellite.id, label: `${card.satellite.name} in 15 minutes`, passAos: card.pass.aos, fireAt });
-            }}
-            onLog={() => setLogging({ satelliteId: card.satellite.id, transmitterId: card.transmitter.id, eventId: card.event?.id ?? null })}
-          />
-        ))}
+        {cards.map((card) => {
+          const cardId = `${card.satellite.id}-${card.pass?.aos ?? "none"}`;
+          return (
+            <PassCard
+              key={card.satellite.id}
+              pass={card.pass}
+              name={card.satellite.name}
+              satelliteId={card.satellite.id}
+              norad={card.satellite.norad}
+              transmitter={card.transmitter}
+              suitability={card.assessment?.suitability}
+              receiverName={card.assessment?.receiver?.name ?? "No compatible receiver"}
+              antennaName={antennaById(profile.antennaId)?.name ?? "Antenna"}
+              suggested={card.suggested}
+              ownedAntenna={card.suggested?.id === profile.antennaId}
+              receivable={card.receivable}
+              reasons={card.assessment?.reasons ?? []}
+              timeZone={profile.timeZone}
+              minElevation={profile.minElevation}
+              eventTitle={card.event?.title}
+              watched={store.watchlist.includes(card.satellite.id)}
+              guideOpen={openId === cardId}
+              onGuide={() => setOpenId((current) => (current === cardId ? null : cardId))}
+              onWatch={() => toggleWatch(card.satellite.id)}
+              onRemind={() => {
+                if (!card.pass) return;
+                const fireAt = new Date(new Date(card.pass.aos).getTime() - 15 * 60_000).toISOString();
+                addReminder({ satelliteId: card.satellite.id, label: `${card.satellite.name} in 15 minutes`, passAos: card.pass.aos, fireAt });
+              }}
+              onLog={() => setLogging({ satelliteId: card.satellite.id, transmitterId: card.transmitter?.id ?? null, eventId: card.event?.id ?? null })}
+            />
+          );
+        })}
       </div>
       {logging && (
         <LogForm
@@ -127,16 +147,20 @@ export function ListenPage() {
 }
 
 function PassCard(props: {
-  pass: PassPrediction;
+  pass: PassPrediction | null;
   name: string;
   satelliteId: string;
   norad: number;
-  transmitter: Transmitter;
-  suitability: string;
+  transmitter: Transmitter | null;
+  suitability?: string;
   receiverName: string;
   antennaName: string;
+  suggested: AntennaModel | null;
+  ownedAntenna: boolean;
+  receivable: boolean;
   reasons: string[];
   timeZone: string;
+  minElevation: number;
   eventTitle?: string;
   watched: boolean;
   guideOpen: boolean;
@@ -145,7 +169,7 @@ function PassCard(props: {
   onRemind: () => void;
   onLog: () => void;
 }) {
-  const shift = dopplerShiftHz(props.transmitter.downlinkHz, props.pass.dopplerFactor);
+  const shift = props.pass && props.transmitter ? dopplerShiftHz(props.transmitter.downlinkHz, props.pass.dopplerFactor) : null;
   return (
     <article className="pass">
       <div className="pass-top">
@@ -154,36 +178,64 @@ function PassCard(props: {
             <Link to={`/satellite/${props.satelliteId}`}>{props.name}</Link>
           </h2>
           <p className="muted">
-            NORAD {props.norad} · {formatFrequency(props.transmitter.downlinkHz)} {props.transmitter.mode}
+            NORAD {props.norad}
+            {props.transmitter ? ` · ${formatFrequency(props.transmitter.downlinkHz)} ${props.transmitter.mode}` : ""}
           </p>
         </div>
-        <span className={`pill ${pillClass(props.suitability)}`}>{props.suitability}</span>
+        <span className={`pill ${props.receivable ? "decoded" : "missing"}`}>{props.receivable ? "Receivable" : "Not receivable"}</span>
       </div>
-      <p className="when">
-        {formatWhen(props.pass.aos, props.timeZone)} – {formatClock(props.pass.los, props.timeZone)}
-      </p>
-      <p>
-        AOS {formatAzimuth(props.pass.aosAzimuth)} · max {formatElevation(props.pass.maxElevation)} · LOS {formatAzimuth(props.pass.losAzimuth)} · {formatDuration(props.pass.durationSec)}
-      </p>
-      <p className="muted">{props.transmitter.description}</p>
-      <p className="muted">
-        {props.receiverName === "No compatible receiver"
-          ? "None of the selected receivers cover this downlink."
-          : props.suitability === "Extra Equipment Required"
-            ? `${props.receiverName} can tune this, but ${props.antennaName} is outside its useful bands.`
-            : `Best rig in this profile: ${props.receiverName} with ${props.antennaName}.`}
-        {" "}Estimated Doppler one minute before the highest point: {shift > 0 ? "+" : ""}
-        {(shift / 1000).toFixed(1)} kHz.
-      </p>
-      {props.eventTitle && <p className="event-note">Potential opportunity. {props.eventTitle} has dates, not an exact on-air time.</p>}
-      {props.pass.orbitAgeDays > 10 && <p className="event-note">Orbital elements are {Math.round(props.pass.orbitAgeDays)} days old. Do not treat this time as precise.</p>}
+      <div className="pass-layout">
+        <div>
+          {props.pass ? (
+            <>
+              <p className="when">
+                {formatWhen(props.pass.aos, props.timeZone)} – {formatClock(props.pass.los, props.timeZone)}
+              </p>
+              <p>
+                AOS {formatAzimuth(props.pass.aosAzimuth)} · max {formatElevation(props.pass.maxElevation)} · LOS {formatAzimuth(props.pass.losAzimuth)} · {formatDuration(props.pass.durationSec)}
+              </p>
+            </>
+          ) : (
+            <p className="muted">No pass above {props.minElevation}° in this window.</p>
+          )}
+          {props.transmitter && <p className="muted">{props.transmitter.description}</p>}
+          {props.pass && props.transmitter && (
+            <p className="muted">
+              {props.receiverName === "No compatible receiver"
+                ? "None of the selected receivers cover this downlink."
+                : props.suitability === "Extra Equipment Required"
+                  ? `${props.receiverName} can tune this, but ${props.antennaName} is outside its useful bands.`
+                  : `Best rig in this profile: ${props.receiverName} with ${props.antennaName}.`}
+              {shift !== null && ` Estimated Doppler one minute before the highest point: ${shift > 0 ? "+" : ""}${(shift / 1000).toFixed(1)} kHz.`}
+            </p>
+          )}
+          {props.suggested && (
+            <p>
+              <Link className={`pill ${props.ownedAntenna ? "decoded" : "missing"}`} to={`/antennas/${props.suggested.id}`}>
+                {props.suggested.name}
+              </Link>
+            </p>
+          )}
+          {props.eventTitle && <p className="event-note">Potential opportunity. {props.eventTitle} has dates, not an exact on-air time.</p>}
+          {props.pass && props.pass.orbitAgeDays > 10 && <p className="event-note">Orbital elements are {Math.round(props.pass.orbitAgeDays)} days old. Do not treat this time as precise.</p>}
+        </div>
+        {props.pass && (
+          <PassSky
+            aosAzimuth={props.pass.aosAzimuth}
+            maxAzimuth={props.pass.maxAzimuth}
+            losAzimuth={props.pass.losAzimuth}
+            maxElevation={props.pass.maxElevation}
+            minElevation={props.minElevation}
+          />
+        )}
+      </div>
       <div className="row">
-        <button type="button" onClick={props.onGuide}>How to listen</button>
-        <button type="button" className="ghost" onClick={props.onRemind}>Remind me</button>
+        <button type="button" onClick={props.onGuide} disabled={!props.transmitter}>How to listen</button>
+        <button type="button" className="ghost" onClick={props.onRemind} disabled={!props.pass}>Remind me</button>
         <button type="button" className="ghost" onClick={props.onWatch}>{props.watched ? "On watchlist" : "Add to watchlist"}</button>
         <button type="button" className="ghost" onClick={props.onLog}>Log reception</button>
       </div>
-      {props.guideOpen && (
+      {props.guideOpen && props.transmitter && (
         <ul className="guide">
           {howToListen(props.transmitter.mode, props.transmitter.description).map((line) => (
             <li key={line}>{line}</li>
@@ -197,8 +249,3 @@ function PassCard(props: {
   );
 }
 
-function pillClass(suitability: string): string {
-  if (suitability === "Good Candidate") return "decoded";
-  if (suitability === "Extra Equipment Required") return "undiscovered";
-  return "received";
-}

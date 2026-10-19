@@ -134,6 +134,68 @@ export const antennas: AntennaModel[] = [
     polarisation: "Vertical",
     directionality: "Roughly omnidirectional",
     notes: "A test whip for 2 m and 70 cm. Weather-satellite frequencies near 137 MHz sit at the low edge. It is a poor match for HF, 237 MHz, and L-band.",
+    buildSummary: "A whip is a bought antenna. For a first home-built satellite antenna, make the V-dipole instead.",
+    buildSteps: [
+      "Screw the whip onto the receiver, or onto a magnetic mount if you are using one outdoors.",
+      "Hold it upright. A whip lying on the desk hears much less.",
+      "It is the simplest thing to try, and a poor match below 136 MHz or above 450 MHz.",
+    ],
+  },
+  {
+    id: "v-dipole",
+    name: "V-dipole",
+    bands: [
+      { minHz: mhz(108), maxHz: mhz(150) },
+      { minHz: mhz(400), maxHz: mhz(460) },
+    ],
+    marginalBands: [{ minHz: mhz(200), maxHz: mhz(260) }],
+    polarisation: "Depends how you aim the V",
+    directionality: "Broad, toward the open side of the V",
+    notes: "Two wires and a coax joint. The simplest antenna that is actually meant for satellite listening.",
+    buildSummary: "Two equal wires, spread about 120° apart, fed with coax at the joint. Cut each wire for the band you want to hear.",
+    buildSteps: [
+      "Each leg is a quarter of a wavelength. Length in centimetres is about 7130 divided by the frequency in MHz. For 137.5 MHz that is about 52 cm. For 145 MHz, about 49 cm. For 436 MHz, about 16 cm.",
+      "Spread the two wires so the angle between them is roughly 120°. A scrap of plastic, a terminal block, or tape on a stick is enough to hold the angle.",
+      "Connect one wire to the centre of the coax and the other to the braid. Keep those two joints from touching.",
+      "Aim the open side of the V toward the sky, broadside to where the satellite will pass. You do not need to track it by hand.",
+      "Start here before building a Yagi. A V-dipole hears weather satellites near 137 MHz and amateur downlinks on 2 m and 70 cm.",
+    ],
+  },
+  {
+    id: "random-wire",
+    name: "Random wire",
+    bands: [{ minHz: mhz(3), maxHz: mhz(30) }],
+    marginalBands: [{ minHz: mhz(1), maxHz: mhz(88) }],
+    polarisation: "Mostly horizontal",
+    directionality: "Uneven",
+    notes: "The simplest HF antenna: one wire, as long and as high as you can manage.",
+    buildSummary: "One long wire for HF. This is the simplest way to hear something like the AO-7 beacon near 29 MHz.",
+    buildSteps: [
+      "Use whatever insulated wire you have. Five to ten metres is enough to begin. Longer and higher hears more.",
+      "Get one end up, a window frame, a tree, or a fishing pole. Keep it off the ground and away from mains cables.",
+      "Connect the wire to the centre of the coax. Connect the braid to a second wire laid on the floor, or to a metal window frame, as a counterpoise.",
+      "A random wire is the wrong tool for 137 MHz weather satellites and for 70 cm. Use a V-dipole there.",
+    ],
+  },
+  {
+    id: "yagi",
+    name: "Yagi",
+    bands: [
+      { minHz: mhz(136), maxHz: mhz(148) },
+      { minHz: mhz(430), maxHz: mhz(440) },
+    ],
+    marginalBands: [],
+    polarisation: "Match the elements to the pass",
+    directionality: "A narrow beam off the front",
+    notes: "More gain than a V-dipole, and you have to point it. Build this after the V-dipole, not instead of it.",
+    buildSummary: "A driven element, a slightly longer reflector behind it, and one shorter director in front. Point the short end at the satellite.",
+    buildSteps: [
+      "Cut the driven element to about half a wavelength: 14700 divided by the frequency in MHz gives centimetres. For 145 MHz that is about 101 cm. For 436 MHz, about 34 cm.",
+      "The reflector, behind the driven element, is about 5% longer. The director, in front, is about 5% shorter.",
+      "Space them about a fifth of a wavelength apart on a wooden or plastic boom. Metal boom mounting changes the lengths, so keep the first one simple.",
+      "Feed the driven element the same way as the V-dipole: coax centre to one half, braid to the other.",
+      "Point the director at the satellite and follow the pass. A Yagi aimed the wrong way hears less than a V-dipole.",
+    ],
   },
 ];
 
@@ -147,4 +209,20 @@ export function antennaById(id: string): AntennaModel | undefined {
 
 export function covers(bands: { minHz: number; maxHz: number }[], hz: number): boolean {
   return bands.some((band) => hz >= band.minHz && hz <= band.maxHz);
+}
+
+export function stationCovers(receiverIds: string[], antennaId: string, hz: number): boolean {
+  const antenna = antennaById(antennaId);
+  const receiverOk = receiverIds.some((id) => {
+    const receiver = receiverById(id);
+    return receiver ? covers(receiver.bands, hz) : false;
+  });
+  const antennaOk = antenna ? covers(antenna.bands, hz) : false;
+  return receiverOk && antennaOk;
+}
+
+export function simplestAntenna(hz: number): AntennaModel {
+  if (hz < 30e6) return antennaById("random-wire") ?? antennas[0];
+  if (hz >= 1e9) return antennaById("yagi") ?? antennas[0];
+  return antennaById("v-dipole") ?? antennas[0];
 }

@@ -14,8 +14,10 @@ export function EquipmentPage() {
         {receivers.map((receiver) => (
           <li key={receiver.id}>
             <div>
-              <strong>{receiver.name}</strong>
-              <span>{receiver.bands.map((band) => `${formatFrequency(band.minHz)} – ${formatFrequency(band.maxHz)}`).join(", ")} · {receiver.bits}</span>
+              <p className="spec-line">
+                <strong>{receiver.name}</strong>
+                <span>{receiver.bands.map((band) => `${formatFrequency(band.minHz)} – ${formatFrequency(band.maxHz)}`).join(", ")} · {receiver.bits}</span>
+              </p>
               <span>{receiver.notes}</span>
               <a href={receiver.source}>Published specification</a>
             </div>
@@ -27,8 +29,10 @@ export function EquipmentPage() {
         {antennas.map((antenna) => (
           <li key={antenna.id}>
             <div>
-              <strong>{antenna.name}</strong>
-              <span>{antenna.polarisation} · {antenna.directionality}</span>
+              <p className="spec-line">
+                <Link to={`/antennas/${antenna.id}`}><strong>{antenna.name}</strong></Link>
+                <span>{antenna.polarisation} · {antenna.directionality}</span>
+              </p>
               <span>{antenna.notes}</span>
             </div>
           </li>

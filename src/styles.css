@@ -161,9 +161,33 @@ h3 { margin: 0.35rem 0 0; font-size: 1rem; }
   font-size: 0.75rem;
 }
 
-.pill.decoded { background: var(--green-bg); color: var(--green); }
+.pill.decoded, a.pill.decoded { background: var(--green-bg); color: var(--green); }
 .pill.received { background: #2a2a2a; color: #e8e8e8; }
 .pill.undiscovered { background: #1c1c1c; color: #9a9a9a; }
+a.pill.missing, .pill.missing { background: #3a1616; color: #ff8d8d; text-decoration: none; }
+a.pill { text-decoration: none; }
+
+.banner {
+  margin: 0 0 0.8rem;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid #5c4a22;
+  border-radius: 12px;
+  background: #241c0e;
+  color: #e7c98a;
+  font-size: 0.88rem;
+}
+
+.pass-layout { display: grid; grid-template-columns: 1fr 180px; gap: 0.8rem; align-items: start; }
+.sky { margin: 0.4rem 0 0; }
+.sky svg { width: 100%; max-width: 200px; height: auto; }
+.sky .ring { fill: none; stroke: #555; stroke-width: 1; }
+.sky polyline { fill: none; stroke: #3ddc84; stroke-width: 2; }
+.sky .mark { fill: #3ddc84; stroke: none; }
+.sky text { fill: #8d8d8d; font-size: 11px; text-anchor: middle; font-family: inherit; }
+.sky figcaption { color: var(--muted); font-size: 0.78rem; margin-top: 0.25rem; }
+
+.spec-line { display: flex; flex-wrap: wrap; gap: 0.35rem 0.75rem; align-items: baseline; margin: 0; }
+.build-steps { padding-left: 1.2rem; display: grid; gap: 0.55rem; }
 
 .filters, .row { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin: 1rem 0; }
 .stack { display: grid; gap: 0.8rem; }
@@ -187,7 +211,7 @@ h3 { margin: 0.35rem 0 0; font-size: 1rem; }
   padding: 0.75rem 0;
   border-bottom: 1px solid var(--line);
 }
-.directory a, .transmitters div, .logs div { display: grid; gap: 0.15rem; text-decoration: none; }
+.directory a, .directory li > div, .transmitters div, .logs div { display: grid; gap: 0.25rem; text-decoration: none; }
 .directory span, .logs span, .transmitters span { color: var(--muted); font-size: 0.88rem; }
 
 .log-form { display: grid; gap: 0.7rem; }
@@ -205,6 +229,6 @@ input, select, textarea {
 .achievements .earned { color: var(--ink); }
 
 @media (max-width: 720px) {
-  .card-grid, .stats { grid-template-columns: 1fr; }
+  .card-grid, .stats, .pass-layout { grid-template-columns: 1fr; }
   .top, .panel-head, .logs li, .directory li { align-items: flex-start; flex-direction: column; }
 }

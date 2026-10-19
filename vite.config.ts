@@ -15,6 +15,9 @@ export default defineConfig({
   worker: {
     format: "es",
   },
+  optimizeDeps: {
+    exclude: ["satellite.js"],
+  },
   plugins: [
     react(),
     {

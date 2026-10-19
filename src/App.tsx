@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { ReminderWatcher } from "./components/ReminderWatcher";
 import { Shell } from "./components/Shell";
 import { StoreProvider } from "./hooks/useStore";
+import { AntennaPage } from "./pages/AntennaPage";
 import { AlertsPage } from "./pages/AlertsPage";
 import { CollectionPage } from "./pages/CollectionPage";
 import { EquipmentPage } from "./pages/EquipmentPage";
@@ -29,6 +30,7 @@ export function App() {
           <Route path="/collection" element={<CollectionPage />} />
           <Route path="/collection/sets" element={<SetsPage />} />
           <Route path="/equipment" element={<EquipmentPage />} />
+          <Route path="/antennas/:id" element={<AntennaPage />} />
           <Route path="/my-equipment" element={<MyEquipmentPage />} />
           <Route path="/settings/alerts" element={<AlertsPage />} />
           <Route path="/learn" element={<LearnPage />} />

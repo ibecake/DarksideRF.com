@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { LogForm } from "../components/LogForm";
+import { PassSky } from "../components/PassSky";
 import { catalogue, satelliteById } from "../data/catalogue";
+import { simplestAntenna, stationCovers } from "../data/equipment";
 import { usePasses } from "../hooks/usePasses";
 import { useLogbook } from "../hooks/useStore";
 import { formatFrequency, formatWhen } from "../lib/format";
@@ -13,19 +15,23 @@ export function SatellitePage() {
   const { store, addLog, toggleWatch } = useLogbook();
   const [logging, setLogging] = useState(false);
   const [transmitterId, setTransmitterId] = useState<string | null>(null);
-  const now = Date.now();
+  const [windowStart] = useState(() => Date.now());
   const { passes, pending } = usePasses({
     latitude: store.profile.latitude,
     longitude: store.profile.longitude,
     heightKm: store.profile.heightKm,
-    startMs: now,
-    endMs: now + 48 * 3_600_000,
+    startMs: windowStart,
+    endMs: windowStart + 48 * 3_600_000,
     minElevation: store.profile.minElevation,
     satelliteIds: satellite ? [satellite.id] : [],
   });
   if (!satellite) return <section className="panel"><h1>Unknown satellite</h1><Link to="/satellites">Back to the catalogue</Link></section>;
   const logs = store.logs.filter((log) => log.satelliteId === satellite.id);
   const watched = store.watchlist.includes(satellite.id);
+  const receivable = satellite.transmitters.some((item) => stationCovers(store.profile.receiverIds, store.profile.antennaId, item.downlinkHz));
+  const focus = satellite.transmitters.find((item) => stationCovers(store.profile.receiverIds, store.profile.antennaId, item.downlinkHz)) ?? satellite.transmitters[0];
+  const suggested = focus ? simplestAntenna(focus.downlinkHz) : null;
+  const nextPass = passes[0];
 
   return (
     <section className="panel">
@@ -34,6 +40,23 @@ export function SatellitePage() {
       <p className="lede">{satellite.summary}</p>
       <p className="muted">NORAD {satellite.norad} · {satellite.cospar} · {satellite.operator}</p>
       <p className="muted">Status in this catalogue: {satellite.status}. That describes the mission record, not a live transmitter check.</p>
+      <div className="row">
+        <span className={`pill ${receivable ? "decoded" : "missing"}`}>{receivable ? "Receivable" : "Not receivable"}</span>
+        {suggested && (
+          <Link className={`pill ${store.profile.antennaId === suggested.id ? "decoded" : "missing"}`} to={`/antennas/${suggested.id}`}>
+            {suggested.name}
+          </Link>
+        )}
+      </div>
+      {nextPass && (
+        <PassSky
+          aosAzimuth={nextPass.aosAzimuth}
+          maxAzimuth={nextPass.maxAzimuth}
+          losAzimuth={nextPass.losAzimuth}
+          maxElevation={nextPass.maxElevation}
+          minElevation={store.profile.minElevation}
+        />
+      )}
       <div className="row">
         <button type="button" onClick={() => { setTransmitterId(satellite.transmitters[0]?.id ?? null); setLogging(true); }}>Log reception</button>
         <button type="button" className="ghost" onClick={() => toggleWatch(satellite.id)}>{watched ? "On watchlist" : "Add to watchlist"}</button>

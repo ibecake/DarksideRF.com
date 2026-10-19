@@ -94,6 +94,8 @@ export interface AntennaModel {
   polarisation: string;
   directionality: string;
   notes: string;
+  buildSummary: string;
+  buildSteps: string[];
 }
 
 export type Suitability =

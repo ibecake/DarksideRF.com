@@ -1,6 +1,5 @@
 export function howToListen(mode: string | null, description: string | null): string[] {
   const lines = [
-    "Receive only. This page does not give instructions for transmitting.",
     "A predicted pass means the satellite is above your horizon. It does not mean the transmitter is switched on.",
   ];
   if (mode === "FM" || mode === "FMN" || mode === "SSTV") {
