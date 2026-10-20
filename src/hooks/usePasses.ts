@@ -25,10 +25,10 @@ export function usePasses(query: Query) {
     setCompleted(0);
     setTotal(0);
     worker.onmessage = (event: MessageEvent<{ passes: PassPrediction[]; pending: boolean; completed: number; total: number }>) => {
-      setPasses(event.data.passes);
       setPending(event.data.pending);
       setCompleted(event.data.completed);
       setTotal(event.data.total);
+      if (!event.data.pending) setPasses(event.data.passes);
     };
     worker.onerror = () => setPending(false);
     worker.postMessage({ ...query, satelliteIds: ids ? ids.split(",") : undefined });

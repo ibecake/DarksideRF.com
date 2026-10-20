@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { TleBlock } from "../components/TleBlock";
 import { landPath } from "../data/landPath";
 import { satelliteById, satellites } from "../data/catalogue";
@@ -36,14 +36,20 @@ function trackSegments(points: SatelliteFix[]): SatelliteFix[][] {
 export function MapPage() {
   const { store } = useLogbook();
   const { profile } = store;
+  const [searchParams] = useSearchParams();
+  const requestedId = searchParams.get("satellite");
   const [now, setNow] = useState(() => new Date());
   const [showAll, setShowAll] = useState(false);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(requestedId);
 
   useEffect(() => {
     const timer = window.setInterval(() => setNow(new Date()), 5000);
     return () => window.clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    if (requestedId) setSelectedId(requestedId);
+  }, [requestedId]);
 
   const fixes = useMemo(
     () => whereSatellites(satellites, now, profile.latitude, profile.longitude, profile.heightKm),
@@ -53,7 +59,7 @@ export function MapPage() {
     () => fixes.filter((fix) => fix.elevation >= profile.minElevation).sort((a, b) => b.elevation - a.elevation),
     [fixes, profile.minElevation],
   );
-  const plotted = showAll ? fixes : fixes.filter((fix) => fix.elevation >= 0);
+  const plotted = showAll ? fixes : fixes.filter((fix) => fix.elevation >= 0 || fix.id === selectedId);
   const selected = fixes.find((fix) => fix.id === selectedId) ?? overhead[0] ?? null;
   const selectedSatellite = selected ? satelliteById(selected.id) : undefined;
   const track = useMemo(() => {

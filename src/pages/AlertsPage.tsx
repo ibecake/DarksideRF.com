@@ -2,12 +2,12 @@ import { useLogbook } from "../hooks/useStore";
 import { formatWhen } from "../lib/format";
 
 export function AlertsPage() {
-  const { store, deleteReminder, setBrowserAlerts, setQuietHours } = useLogbook();
+  const { store, deleteReminder, setBrowserAlerts, setEmailAlerts, setQuietHours } = useLogbook();
   return (
     <section className="panel">
       <p className="eyebrow">Darkside RF / Alerts</p>
       <h1>Alerts</h1>
-      <p className="lede">Reminders stay in this browser. Email and server-side pass recalculation are not connected yet, so a reminder only fires while this site is open.</p>
+      <p className="lede">A reminder only fires while this site is open. Email is saved with the account and is not delivered until the notification service is connected.</p>
       <label className="check">
         <input
           type="checkbox"
@@ -18,6 +18,10 @@ export function AlertsPage() {
           }}
         />
         Browser notifications for reminders due while this tab is open
+      </label>
+      <label className="check">
+        <input type="checkbox" checked={store.alerts.email} onChange={(event) => setEmailAlerts(event.target.checked)} />
+        Email me when a watched satellite or an announced event matches this station
       </label>
       <form
         className="row"

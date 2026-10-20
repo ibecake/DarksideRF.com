@@ -5,12 +5,13 @@ import { PassSky } from "../components/PassSky";
 import { TuningStrip } from "../components/TuningStrip";
 import { heardReport, reportDate } from "../data/activity";
 import { events } from "../data/events";
-import { satellites } from "../data/catalogue";
+import { satelliteById, satellites } from "../data/catalogue";
 import { antennaById, simplestAntenna, stationCovers } from "../data/equipment";
 import { usePasses } from "../hooks/usePasses";
 import { useLogbook } from "../hooks/useStore";
 import { civilDate, dopplerShiftHz, formatAzimuth, formatClock, formatDuration, formatElevation, formatFrequency, formatWhen, zonedParts, zonedTimeToUtc } from "../lib/format";
 import { expectedOutcome } from "../lib/outcome";
+import { tleFor } from "../lib/tle";
 import { assess, bestTransmitter } from "../lib/listenability";
 import type { AntennaModel, PassPrediction, TimeWindow, Transmitter } from "../types";
 
@@ -125,13 +126,14 @@ export function ListenPage() {
         <Link to="/learn">How to listen</Link>
         <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search satellites" aria-label="Search satellites" />
       </div>
-      {pending && <p className="muted">Calculating passes… {completed > 0 ? `${completed} of ${total}` : ""}</p>}
+      {pending && <p className="muted">Calculating passes in this browser… {completed > 0 ? `${completed} of ${total}` : ""}</p>}
       {shown.length === 0 && <p className="muted">No satellites match this filter.</p>}
       <div className="stack">
         {shown.map((card) => (
             <PassCard
               key={card.satellite.id}
               pass={card.pass}
+              pending={pending}
               name={card.satellite.name}
               satelliteId={card.satellite.id}
               norad={card.satellite.norad}
@@ -173,6 +175,7 @@ export function ListenPage() {
 
 function PassCard(props: {
   pass: PassPrediction | null;
+  pending: boolean;
   name: string;
   satelliteId: string;
   norad: number;
@@ -193,6 +196,7 @@ function PassCard(props: {
   onLog: () => void;
 }) {
   const [open, setOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
   const shift = props.pass && props.transmitter ? dopplerShiftHz(props.transmitter.downlinkHz, props.pass.dopplerFactor) : null;
   const others = props.transmitters.filter((item) => item.id !== props.transmitter?.id);
   const outcome = props.transmitter ? expectedOutcome(props.transmitter) : null;
@@ -226,17 +230,48 @@ function PassCard(props: {
           <p className="when">
             {formatWhen(props.pass.aos, props.timeZone)} – {formatClock(props.pass.los, props.timeZone)} · max {formatElevation(props.pass.maxElevation)}
           </p>
+        ) : props.pending ? (
+          <p className="muted">Calculating this pass…</p>
         ) : (
           <p className="muted">No pass above {props.minElevation}° in this window.</p>
         )}
-        <button
-          type="button"
-          className="ghost pass-more"
-          aria-expanded={open}
-          onClick={() => setOpen((current) => !current)}
-        >
-          {open ? "Hide" : "Details"}
-        </button>
+        <div className="row pass-actions">
+          <button
+            type="button"
+            className="ghost pass-more"
+            aria-expanded={open}
+            onClick={() => setOpen((current) => !current)}
+          >
+            {open ? "Hide" : "Details"}
+          </button>
+          <button
+            type="button"
+            className="ghost pass-more"
+            onClick={() => {
+              const satellite = satelliteById(props.satelliteId);
+              if (!satellite) return;
+              const text = tleFor(satellite);
+              const finish = () => {
+                setCopied(true);
+                window.setTimeout(() => setCopied(false), 1600);
+              };
+              navigator.clipboard.writeText(text).then(finish).catch(() => {
+                const area = document.createElement("textarea");
+                area.value = text;
+                area.setAttribute("readonly", "");
+                area.style.position = "fixed";
+                area.style.left = "-9999px";
+                document.body.appendChild(area);
+                area.select();
+                const ok = document.execCommand("copy");
+                area.remove();
+                if (ok) finish();
+              });
+            }}
+          >
+            {copied ? "TLE copied" : "Copy TLE"}
+          </button>
+        </div>
       </div>
       {open && <div className="pass-detail">
       {props.transmitter && <TuningStrip transmitter={props.transmitter} dialHz={shift === null ? null : props.transmitter.downlinkHz + shift} />}
@@ -278,13 +313,15 @@ function PassCard(props: {
           {props.pass && props.pass.orbitAgeDays > 10 && <p className="event-note">Orbital elements are {Math.round(props.pass.orbitAgeDays)} days old. Do not treat this time as precise.</p>}
         </div>
         {props.pass && (
-          <PassSky
-            aosAzimuth={props.pass.aosAzimuth}
-            maxAzimuth={props.pass.maxAzimuth}
-            losAzimuth={props.pass.losAzimuth}
-            maxElevation={props.pass.maxElevation}
-            minElevation={props.minElevation}
-          />
+          <Link to={`/map?satellite=${props.satelliteId}`} className="sky-link" aria-label={`Show ${props.name} on the world map`}>
+            <PassSky
+              aosAzimuth={props.pass.aosAzimuth}
+              maxAzimuth={props.pass.maxAzimuth}
+              losAzimuth={props.pass.losAzimuth}
+              maxElevation={props.pass.maxElevation}
+              minElevation={props.minElevation}
+            />
+          </Link>
         )}
       </div>
       <div className="row">

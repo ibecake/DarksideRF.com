@@ -1,8 +1,12 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { ReminderWatcher } from "./components/ReminderWatcher";
 import { Shell } from "./components/Shell";
+import { AccountProvider } from "./hooks/useAccount";
 import { StoreProvider } from "./hooks/useStore";
+import { AccountPage } from "./pages/AccountPage";
+import { AboutPage } from "./pages/AboutPage";
 import { AntennaPage } from "./pages/AntennaPage";
+import { ContactPage } from "./pages/ContactPage";
 import { AlertsPage } from "./pages/AlertsPage";
 import { CollectionPage } from "./pages/CollectionPage";
 import { EquipmentPage } from "./pages/EquipmentPage";
@@ -18,6 +22,7 @@ import { SignalsPage } from "./pages/SignalsPage";
 
 export function App() {
   return (
+    <AccountProvider>
     <StoreProvider>
       <ReminderWatcher />
       <Routes>
@@ -36,8 +41,12 @@ export function App() {
           <Route path="/my-equipment" element={<MyEquipmentPage />} />
           <Route path="/settings/alerts" element={<AlertsPage />} />
           <Route path="/learn" element={<LearnPage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/account" element={<AccountPage />} />
         </Route>
       </Routes>
     </StoreProvider>
+    </AccountProvider>
   );
 }

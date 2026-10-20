@@ -15,6 +15,7 @@ export const defaultProfile: Profile = {
 
 const defaultAlerts: AlertPrefs = {
   browser: false,
+  email: false,
   quietStart: "23:00",
   quietEnd: "07:00",
 };

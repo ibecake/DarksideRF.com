@@ -34,8 +34,7 @@ self.onmessage = (event: MessageEvent<RequestMessage>) => {
       // A bad element set should drop that satellite, not the whole search.
     }
     if (fullCatalogue && (index + 1) % 40 === 0) {
-      const snapshot = passes.slice().sort((a, b) => a.aos.localeCompare(b.aos));
-      const update: PassSearchResult = { passes: snapshot, pending: true, completed: index + 1, total: chosen.length };
+      const update: PassSearchResult = { passes: [], pending: true, completed: index + 1, total: chosen.length };
       self.postMessage(update);
     }
   });

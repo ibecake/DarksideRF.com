@@ -192,6 +192,8 @@ a.pill { text-decoration: none; }
 
 .pass-layout { display: grid; grid-template-columns: minmax(0, 1fr) 180px; gap: 0.8rem; align-items: start; }
 .sky { margin: 0.4rem 0 0; }
+a.sky-link { display: block; color: inherit; text-decoration: none; cursor: pointer; }
+a.sky-link:hover .sky { outline: 1px solid var(--line); }
 .sky svg { width: 100%; max-width: 200px; height: auto; }
 .sky .ring { fill: none; stroke: #555; stroke-width: 1; }
 .sky polyline { fill: none; stroke: #3ddc84; stroke-width: 2; }
@@ -308,6 +310,7 @@ button.map-pick {
 }
 .pass-facts span:not(:last-child)::after { content: " ·"; color: var(--muted); }
 .pass-detail { cursor: default; }
+.pass-actions { margin: 0.15rem 0 0; gap: 0.9rem; }
 button.pass-more {
   justify-self: start;
   margin-top: 0.35rem;
@@ -365,6 +368,8 @@ input, select, textarea {
   .pass { padding: 0.85rem; }
   .pass .row { display: grid; grid-template-columns: 1fr 1fr; }
   .pass .row button { width: 100%; min-height: 2.6rem; font-size: 0.86rem; padding: 0.4rem 0.3rem; }
+  .pass .row.pass-actions { display: flex; }
+  .pass .row.pass-actions button { width: auto; min-height: 0; padding: 0.15rem 0; font-size: 0.82rem; }
   .tune { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .pass-layout { justify-items: stretch; }
   .sky { text-align: center; }

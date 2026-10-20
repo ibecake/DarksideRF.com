@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { satelliteById } from "../data/catalogue";
 import { events } from "../data/events";
+import { sources } from "../data/sources";
 import { formatFrequency } from "../lib/format";
 
 export function EventsPage() {
@@ -33,6 +34,19 @@ export function EventsPage() {
           </article>
         );
       })}
+      <h2>Sources the monitor will read</h2>
+      <p className="muted">These are the first official and specialist pages. This site lists them and does not poll them yet, so nothing here is a live feed.</p>
+      <ul className="logs">
+        {sources.map((source) => (
+          <li key={source.id}>
+            <div>
+              <strong><a href={source.url}>{source.name}</a></strong>
+              <span>{source.category} · {source.language} · check about every {source.pollIntervalHours} hours</span>
+              <span>{source.notes}</span>
+            </div>
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }

@@ -143,7 +143,7 @@ export interface ReceptionLog {
   notes: string;
   quality: string;
   sourceType: "live_entry" | "manual_historical";
-  verificationState: "self_reported";
+  verificationState: "self_reported" | "evidence_attached" | "reviewed";
   createdAt: string;
   updatedAt: string;
 }
@@ -158,6 +158,7 @@ export interface Reminder {
 
 export interface AlertPrefs {
   browser: boolean;
+  email: boolean;
   quietStart: string;
   quietEnd: string;
 }
