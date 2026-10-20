@@ -14,13 +14,8 @@ Phase 1 is a static React app. Pushing `main` builds it and publishes GitHub Pag
 
 The collection screen opens on a labelled example. It is not your log.
 
-## Local
-
-```bash
-npm install
-npm run dev
-```
-
-## DNS
-
-The domain still needs the Hover records in the previous setup: four GitHub Pages `A` records, the matching `AAAA` records, and `www` as a `CNAME` to `ibecake.github.io`.
+## Notes for imporvement:
+- add the tle to the sat card on the listen page on click copy.
+- clicking the elevation vizualization needs to bring you to the world map.
+- add about and contact page.
+- check is it dynamically calculating as its slows down 
