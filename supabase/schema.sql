@@ -108,7 +108,8 @@ create policy "published events are public" on public.activity_events
 insert into public.sources (id, name, url, category, trust_tier, language, poll_interval_hours, notes) values
   ('ariss-sstv', 'ARISS upcoming SSTV', 'https://www.ariss.org/upcoming-sstv-events.html', 'official', 'official', 'en', 12, 'Date windows for ISS SSTV. Exact on-air times are often published later.'),
   ('amsat-status', 'AMSAT status summary', 'https://www.amsat.org/status/api/v1/summary.php?hours=720', 'specialist', 'specialist', 'en', 24, 'Heard, telemetry-only, and not-heard reports. A report is not a pass.'),
-  ('amsat-uk', 'AMSAT-UK', 'https://amsat-uk.org/', 'specialist', 'specialist', 'en', 24, 'News and activation notes from AMSAT-UK.')
+  ('amsat-uk', 'AMSAT-UK', 'https://amsat-uk.org/', 'specialist', 'specialist', 'en', 24, 'News and activation notes from AMSAT-UK.'),
+  ('ucs-satellite-database', 'UCS Satellite Database', 'https://www.ucs.org/media/11493', 'specialist', 'specialist', 'en', 8760, 'Text file of the 1 May 2023 edition. Records mass, power, launch date, expected lifetime, apogee, perigee, inclination, period, purpose, and who owns, operates, and built the satellite. It does not list a downlink.')
 on conflict (id) do nothing;
 
 insert into public.activity_events (

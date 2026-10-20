@@ -11,6 +11,8 @@ import { AlertsPage } from "./pages/AlertsPage";
 import { CollectionPage } from "./pages/CollectionPage";
 import { EquipmentPage } from "./pages/EquipmentPage";
 import { EventsPage } from "./pages/EventsPage";
+import { HuntCasePage } from "./pages/HuntCasePage";
+import { HuntPage } from "./pages/HuntPage";
 import { LearnPage } from "./pages/LearnPage";
 import { ListenPage } from "./pages/ListenPage";
 import { MapPage } from "./pages/MapPage";
@@ -30,6 +32,8 @@ export function App() {
           <Route path="/" element={<Navigate to="/listen" replace />} />
           <Route path="/listen" element={<ListenPage />} />
           <Route path="/events" element={<EventsPage />} />
+          <Route path="/hunt" element={<HuntPage />} />
+          <Route path="/hunt/:id" element={<HuntCasePage />} />
           <Route path="/satellites" element={<SatellitesPage />} />
           <Route path="/map" element={<MapPage />} />
           <Route path="/satellite/:id" element={<SatellitePage />} />

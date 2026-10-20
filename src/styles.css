@@ -176,6 +176,7 @@ h3 { margin: 0.35rem 0 0; font-size: 1rem; }
 
 .pill.decoded, a.pill.decoded { background: var(--green-bg); color: var(--green); }
 .pill.received { background: #2a2a2a; color: #e8e8e8; }
+.pill.caution { background: #2c2618; color: #e7c98a; }
 .pill.undiscovered { background: #1c1c1c; color: #9a9a9a; }
 a.pill.missing, .pill.missing { background: #3a1616; color: #ff8d8d; text-decoration: none; }
 a.pill { text-decoration: none; }
@@ -280,7 +281,10 @@ button.map-pick {
   overflow-wrap: anywhere;
 }
 .tune-main dd { font-size: 1.2rem; white-space: nowrap; }
-.tune-note { font-size: 0.78rem; margin: 0.35rem 0 0; }
+.tune-note-cell dd { font-size: 0.88rem; color: #d5d5d5; }
+.tune a { color: inherit; }
+.tune-warn { border-color: #6a3030; }
+.tune + .tune, .pass-layout .tune { margin-top: 0.4rem; }
 .also { display: flex; flex-wrap: wrap; gap: 0.2rem 0.35rem; align-items: baseline; }
 .also span:not(.also-label) { white-space: nowrap; }
 .also span:not(.also-label):not(:last-child)::after { content: " ·"; }
@@ -308,6 +312,7 @@ button.map-pick {
   margin: 0.45rem 0 0;
   font-variant-numeric: tabular-nums;
 }
+.pass-pills { display: flex; flex-wrap: wrap; gap: 0.35rem; justify-content: flex-end; }
 .pass-facts span:not(:last-child)::after { content: " ·"; color: var(--muted); }
 .pass-detail { cursor: default; }
 .pass-actions { margin: 0.15rem 0 0; gap: 0.9rem; }

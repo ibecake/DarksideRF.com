@@ -41,7 +41,7 @@ export function EventsPage() {
           <li key={source.id}>
             <div>
               <strong><a href={source.url}>{source.name}</a></strong>
-              <span>{source.category} · {source.language} · check about every {source.pollIntervalHours} hours</span>
+              <span>{source.category} · {source.language} · {source.schedule}</span>
               <span>{source.notes}</span>
             </div>
           </li>

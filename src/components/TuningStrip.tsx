@@ -36,14 +36,17 @@ export function TuningStrip({ transmitter, dialHz }: { transmitter: Transmitter;
             <dd>{cell.value}</dd>
           </div>
         ))}
+        <div className="tune-span tune-note-cell">
+          <dt>Settings</dt>
+          <dd>
+            {tuning.fromPassband
+              ? "Bandwidth is the published passband. The other settings are the usual SDR choices for this mode."
+              : tuning.modulation
+                ? "Modulation, bandwidth, and step are the usual SDR settings for this mode."
+                : "SatNOGS recorded the frequency without a mode, so there is no suggested filter."}
+          </dd>
+        </div>
       </dl>
-      <p className="muted tune-note">
-        {tuning.fromPassband
-          ? "Bandwidth is the published passband. The other settings are the usual SDR choices for this mode."
-          : tuning.modulation
-            ? "Modulation, bandwidth, and step are the usual SDR settings for this mode."
-            : "SatNOGS recorded the frequency without a mode, so there is no suggested filter."}
-      </p>
     </div>
   );
 }

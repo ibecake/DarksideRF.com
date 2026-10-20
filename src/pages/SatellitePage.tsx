@@ -11,6 +11,7 @@ import { usePasses } from "../hooks/usePasses";
 import { useLogbook } from "../hooks/useStore";
 import { formatWhen } from "../lib/format";
 import { tleFor } from "../lib/tle";
+import { sourceValidity } from "../lib/validity";
 
 export function SatellitePage() {
   const { id = "" } = useParams();
@@ -30,6 +31,7 @@ export function SatellitePage() {
   });
   if (!satellite) return <section className="panel"><h1>Unknown satellite</h1><Link to="/satellites">Back to the catalogue</Link></section>;
   const heard = heardReport(satellite.id);
+  const validity = sourceValidity(satellite);
   const logs = store.logs.filter((log) => log.satelliteId === satellite.id);
   const watched = store.watchlist.includes(satellite.id);
   const receivable = satellite.transmitters.some((item) => stationCovers(store.profile.receiverIds, store.profile.antennaId, item.downlinkHz));
@@ -44,6 +46,8 @@ export function SatellitePage() {
       <p className="lede">{satellite.summary}</p>
       <p className="muted">NORAD {satellite.norad} · {satellite.cospar} · {satellite.operator}</p>
       <p className="muted">Status in this catalogue: {satellite.status}. That describes the mission record, not a live transmitter check.</p>
+      <p><span className={`pill ${validity.tone}`}>{validity.label}</span></p>
+      <p>{validity.detail}</p>
       {heard && (
         <p className="muted">AMSAT listeners reported {heard.report} on {reportDate(heard.latest)}. Source: the AMSAT status rollup for the previous 30 days.</p>
       )}

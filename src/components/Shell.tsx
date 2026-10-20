@@ -4,6 +4,7 @@ import { useAccount } from "../hooks/useAccount";
 const links = [
   ["/listen", "Listen"],
   ["/events", "Events"],
+  ["/hunt", "Hunt"],
   ["/satellites", "Satellites"],
   ["/map", "Map"],
   ["/signals", "Signals"],

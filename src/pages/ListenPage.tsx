@@ -12,6 +12,7 @@ import { useLogbook } from "../hooks/useStore";
 import { civilDate, dopplerShiftHz, formatAzimuth, formatClock, formatDuration, formatElevation, formatFrequency, formatWhen, zonedParts, zonedTimeToUtc } from "../lib/format";
 import { expectedOutcome } from "../lib/outcome";
 import { tleFor } from "../lib/tle";
+import { sourceValidity, type SourceValidity } from "../lib/validity";
 import { assess, bestTransmitter } from "../lib/listenability";
 import type { AntennaModel, PassPrediction, TimeWindow, Transmitter } from "../types";
 
@@ -36,6 +37,7 @@ export function ListenPage() {
   const { profile } = store;
   const [window, setWindow] = useState<TimeWindow>("6h");
   const [reach, setReach] = useState<"all" | "receivable" | "hidden" | "heard">("all");
+  const [record, setRecord] = useState<"all" | SourceValidity["label"]>("all");
   const [query, setQuery] = useState("");
   const [logging, setLogging] = useState<{ satelliteId: string; transmitterId: string | null; eventId: string | null } | null>(null);
   const range = useMemo(() => rangeFor(window, profile.timeZone), [window, profile.timeZone]);
@@ -81,12 +83,13 @@ export function ListenPage() {
       if (reach === "receivable" && !card.receivable) return false;
       if (reach === "hidden" && card.receivable) return false;
       if (reach === "heard" && !heardReport(card.satellite.id)) return false;
+      if (record !== "all" && sourceValidity(card.satellite).label !== record) return false;
       if (!needle) return true;
       return card.satellite.name.toLowerCase().includes(needle)
         || String(card.satellite.norad).includes(needle)
         || card.satellite.aliases.some((alias) => alias.toLowerCase().includes(needle));
     });
-  }, [cards, query, reach]);
+  }, [cards, query, reach, record]);
 
   return (
     <section className="panel">
@@ -97,7 +100,7 @@ export function ListenPage() {
         </div>
       </div>
       <p className="lede">
-        {profile.locationName}. A pass is geometry. It is not proof the satellite is transmitting.
+        {profile.locationName}. A pass is geometry. It is not proof the satellite is transmitting. The label on each card is how solid the frequency record is, not a chance of hearing it.
       </p>
       <div className="filters">
         {([
@@ -125,6 +128,20 @@ export function ListenPage() {
         <Link to="/my-equipment">Change station</Link>
         <Link to="/learn">How to listen</Link>
         <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search satellites" aria-label="Search satellites" />
+      </div>
+      <div className="filters">
+        {([
+          ["all", "All records"],
+          ["Heard recently", "Heard recently"],
+          ["Documented", "Documented"],
+          ["Ageing record", "Ageing record"],
+          ["Uncertain", "Uncertain"],
+          ["Unlikely", "Unlikely"],
+        ] as const).map(([id, label]) => (
+          <button key={id} className={record === id ? "on" : "ghost"} type="button" onClick={() => setRecord(id)}>
+            {label}
+          </button>
+        ))}
       </div>
       {pending && <p className="muted">Calculating passes in this browser… {completed > 0 ? `${completed} of ${total}` : ""}</p>}
       {shown.length === 0 && <p className="muted">No satellites match this filter.</p>}
@@ -201,6 +218,7 @@ function PassCard(props: {
   const others = props.transmitters.filter((item) => item.id !== props.transmitter?.id);
   const outcome = props.transmitter ? expectedOutcome(props.transmitter) : null;
   const heard = heardReport(props.satelliteId);
+  const validity = sourceValidity(satelliteById(props.satelliteId)!);
   return (
     <article
       className={`pass${open ? " is-open" : ""}`}
@@ -218,7 +236,10 @@ function PassCard(props: {
             </h2>
             <p className="muted">NORAD {props.norad}</p>
           </div>
-          <span className={`pill ${props.receivable ? "decoded" : "missing"}`}>{props.receivable ? "Receivable" : "Not receivable"}</span>
+          <span className="pass-pills">
+            <span className={`pill ${props.receivable ? "decoded" : "missing"}`}>{props.receivable ? "Receivable" : "Not receivable"}</span>
+            <span className={`pill ${validity.tone}`}>{validity.label}</span>
+          </span>
         </div>
         <p className="pass-facts">
           {props.transmitter && <span>{formatFrequency(props.transmitter.downlinkHz)}</span>}
@@ -286,29 +307,40 @@ function PassCard(props: {
       )}
       <div className="pass-layout">
         <div>
-          {props.pass && (
-            <p>
-              AOS {formatAzimuth(props.pass.aosAzimuth)} · max {formatElevation(props.pass.maxElevation)} · LOS {formatAzimuth(props.pass.losAzimuth)} · {formatDuration(props.pass.durationSec)}
-            </p>
-          )}
-          {props.transmitter && <p className="muted">{props.transmitter.description}</p>}
-          {props.pass && props.transmitter && (
-            <p className="muted">
-              {props.receiverName === "No compatible receiver"
-                ? "None of the selected receivers cover this downlink."
-                : props.suitability === "Extra Equipment Required"
-                  ? `${props.receiverName} can tune this, but ${props.antennaName} is outside its useful bands.`
-                  : `Best rig in this profile: ${props.receiverName} with ${props.antennaName}.`}
-              {shift !== null && ` Estimated Doppler one minute before the highest point: ${shift > 0 ? "+" : ""}${(shift / 1000).toFixed(1)} kHz.`}
-            </p>
-          )}
-          {props.suggested && (
-            <p>
-              <Link className={`pill ${props.ownedAntenna ? "decoded" : "missing"}`} to={`/antennas/${props.suggested.id}`}>
-                {props.suggested.name}
-              </Link>
-            </p>
-          )}
+          <dl className="tune">
+            {props.pass && (
+              <>
+                <div><dt>AOS</dt><dd>{formatAzimuth(props.pass.aosAzimuth)}</dd></div>
+                <div><dt>Max</dt><dd>{formatElevation(props.pass.maxElevation)}</dd></div>
+                <div><dt>LOS</dt><dd>{formatAzimuth(props.pass.losAzimuth)}</dd></div>
+                <div><dt>Duration</dt><dd>{formatDuration(props.pass.durationSec)}</dd></div>
+              </>
+            )}
+            {props.transmitter?.description && (
+              <div className="tune-span"><dt>Signal</dt><dd>{props.transmitter.description}</dd></div>
+            )}
+            {props.pass && props.transmitter && (
+              <>
+                <div><dt>Receiver</dt><dd>{props.receiverName}</dd></div>
+                <div><dt>Antenna</dt><dd>{props.antennaName}</dd></div>
+                {shift !== null && (
+                  <div><dt>Doppler</dt><dd>{shift > 0 ? "+" : ""}{(shift / 1000).toFixed(1)} kHz</dd></div>
+                )}
+                {props.receiverName === "No compatible receiver" && (
+                  <div className="tune-span tune-note-cell"><dt>Fit</dt><dd>None of the selected receivers cover this downlink.</dd></div>
+                )}
+                {props.suitability === "Extra Equipment Required" && props.receiverName !== "No compatible receiver" && (
+                  <div className="tune-span tune-note-cell"><dt>Fit</dt><dd>{props.receiverName} can tune this. {props.antennaName} is outside its useful bands.</dd></div>
+                )}
+              </>
+            )}
+            {props.suggested && (
+              <div className={props.ownedAntenna ? undefined : "tune-warn"}>
+                <dt>Suggested</dt>
+                <dd><Link to={`/antennas/${props.suggested.id}`}>{props.suggested.name}</Link></dd>
+              </div>
+            )}
+          </dl>
           {props.eventTitle && <p className="event-note">Potential opportunity. {props.eventTitle} has dates, not an exact on-air time.</p>}
           {props.pass && props.pass.orbitAgeDays > 10 && <p className="event-note">Orbital elements are {Math.round(props.pass.orbitAgeDays)} days old. Do not treat this time as precise.</p>}
         </div>

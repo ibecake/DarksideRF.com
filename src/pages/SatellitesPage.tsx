@@ -6,6 +6,7 @@ import { catalogue, satellites } from "../data/catalogue";
 import { simplestAntenna, stationCovers } from "../data/equipment";
 import { useLogbook } from "../hooks/useStore";
 import { formatFrequency } from "../lib/format";
+import { sourceValidity } from "../lib/validity";
 import { catalogueTle } from "../lib/tle";
 
 export function SatellitesPage() {
@@ -34,12 +35,13 @@ export function SatellitesPage() {
       </div>
       <div className="sources">
         <p className="muted">Trackable means an active SatNOGS downlink and a current CelesTrak orbit, retrieved {catalogue.retrievedAt}. Heard means an AMSAT status report of Heard, Telemetry Only, or Crew Active in the 30 days before {activity.retrievedAt.slice(0, 10)}.</p>
+        <h2>Published, no current orbit</h2>
+        <p className="muted">These {activity.je9pelActiveMissing.length} are active on the <a href={activity.je9pelUrl}>JE9PEL frequency list</a> and have no orbit here. There is no pass to calculate. The frequency is a published figure, not a hearing, so the source is unvalidated for listening.</p>
         <details>
-          <summary>JE9PEL active satellites with no orbit in this list ({activity.je9pelActiveMissing.length})</summary>
-          <p className="muted">Published on the <a href={activity.je9pelUrl}>JE9PEL frequency list</a>. They stay out of the pass search until a current orbit is in this catalogue. The number is the figure JE9PEL published.</p>
+          <summary>Show the {activity.je9pelActiveMissing.length} names</summary>
           <ul>
             {activity.je9pelActiveMissing.map((item) => (
-              <li key={item.norad}><strong>{item.name}</strong> <span>NORAD {item.norad} · {publishedMhz(item.mhz)} · {item.mode || "mode unpublished"}</span></li>
+              <li key={item.norad}><strong>{item.name}</strong> <span>NORAD {item.norad} · {publishedMhz(item.mhz)} · {item.mode || "mode unpublished"}</span> <span className="pill missing">No orbit</span></li>
             ))}
           </ul>
         </details>
@@ -75,6 +77,7 @@ export function SatellitesPage() {
                 <span>{satellite.category} · NORAD {satellite.norad}{primary ? ` · ${formatFrequency(primary.downlinkHz)} ${primary.mode}` : ""}</span>
               </Link>
               <span className={`pill ${receivable ? "decoded" : "missing"}`}>{receivable ? "Receivable" : "Not receivable"}</span>
+              <span className={`pill ${sourceValidity(satellite).tone}`}>{sourceValidity(satellite).label}</span>
               {heard && <span className="pill received">Heard {reportDate(heard.latest)}</span>}
               {suggested && (
                 <Link className={`pill ${store.profile.antennaId === suggested.id ? "decoded" : "missing"}`} to={`/antennas/${suggested.id}`}>

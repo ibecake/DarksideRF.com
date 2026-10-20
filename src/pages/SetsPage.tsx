@@ -20,6 +20,7 @@ export function SetsPage() {
               <span className="pill received">{done} / {set.satelliteIds.length}</span>
             </div>
             <p>{set.description}</p>
+            {set.slug === "zombies" && <p><Link to="/hunt">Open Zombie Hunter</Link></p>}
             <ul>
               {set.satelliteIds.map((id) => (
                 <li key={id}>

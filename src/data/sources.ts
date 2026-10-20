@@ -4,7 +4,7 @@ export interface MonitorSource {
   url: string;
   category: "official" | "specialist";
   language: string;
-  pollIntervalHours: number;
+  schedule: string;
   notes: string;
 }
 
@@ -15,7 +15,7 @@ export const sources: MonitorSource[] = [
     url: "https://www.ariss.org/upcoming-sstv-events.html",
     category: "official",
     language: "en",
-    pollIntervalHours: 12,
+    schedule: "Check about every 12 hours",
     notes: "Date windows for ISS SSTV. Exact on-air times are often published later.",
   },
   {
@@ -24,7 +24,7 @@ export const sources: MonitorSource[] = [
     url: "https://www.amsat.org/status/api/v1/summary.php?hours=720",
     category: "specialist",
     language: "en",
-    pollIntervalHours: 24,
+    schedule: "Check about every 24 hours",
     notes: "Heard, telemetry-only, and not-heard reports. A report is not a pass.",
   },
   {
@@ -33,7 +33,16 @@ export const sources: MonitorSource[] = [
     url: "https://amsat-uk.org/",
     category: "specialist",
     language: "en",
-    pollIntervalHours: 24,
+    schedule: "Check about every 24 hours",
     notes: "News and activation notes from AMSAT-UK.",
+  },
+  {
+    id: "ucs-satellite-database",
+    name: "UCS Satellite Database",
+    url: "https://www.ucs.org/media/11493",
+    category: "specialist",
+    language: "en",
+    schedule: "Text file, 1 May 2023 edition",
+    notes: "Records mass, power, launch date, expected lifetime, apogee, perigee, inclination, period, purpose, and who owns, operates, and built the satellite. It does not list a downlink.",
   },
 ];
