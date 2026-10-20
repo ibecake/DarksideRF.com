@@ -123,6 +123,13 @@ h3 { margin: 0.35rem 0 0; font-size: 1rem; }
   padding: 1.4rem 0 1rem;
   border-bottom: 1px solid var(--line);
 }
+.stats.quad { grid-template-columns: repeat(4, 1fr); gap: 0.6rem; }
+.sources { margin: 0.8rem 0 1rem; }
+.sources details { padding: 0.55rem 0; border-top: 1px solid var(--line); }
+.sources summary { cursor: pointer; }
+.sources ul { list-style: none; padding: 0; margin: 0.4rem 0 0; max-height: 18rem; overflow: auto; }
+.sources li { padding: 0.35rem 0; border-bottom: 1px solid var(--line); display: grid; gap: 0.15rem; }
+.sources a { color: inherit; }
 
 .stats strong {
   display: block;
@@ -289,6 +296,28 @@ button.map-pick {
   padding: 1rem;
   margin-top: 0.8rem;
 }
+.pass { cursor: pointer; }
+.pass.is-open { cursor: default; }
+.pass-summary { display: grid; gap: 0.15rem; }
+.pass-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.15rem 0.45rem;
+  margin: 0.45rem 0 0;
+  font-variant-numeric: tabular-nums;
+}
+.pass-facts span:not(:last-child)::after { content: " ·"; color: var(--muted); }
+.pass-detail { cursor: default; }
+button.pass-more {
+  justify-self: start;
+  margin-top: 0.35rem;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  padding: 0.15rem 0;
+  border-radius: 0;
+  font-size: 0.82rem;
+}
 
 .pass p, .guide { margin: 0.35rem 0; }
 .when { font-size: 1.05rem; }
@@ -327,7 +356,11 @@ input, select, textarea {
   .banner { font-size: 0.82rem; }
   .brand img { width: 112px; height: 112px; }
   .card-grid, .stats, .pass-layout, .map-layout { grid-template-columns: 1fr; }
-  .top, .panel-head, .logs li, .directory li, .transmitters li { align-items: flex-start; flex-direction: column; }
+  .stats.quad { grid-template-columns: 1fr 1fr; }
+  .top { flex-direction: column; align-items: center; }
+  .top nav { width: 100%; justify-content: center; }
+  .pass-summary { cursor: pointer; }
+  .panel-head, .logs li, .directory li, .transmitters li { align-items: flex-start; flex-direction: column; }
   .filters input { flex-basis: 100%; }
   .pass { padding: 0.85rem; }
   .pass .row { display: grid; grid-template-columns: 1fr 1fr; }

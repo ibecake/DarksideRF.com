@@ -1,0 +1,1306 @@
+{
+  "retrievedAt": "2026-10-20T05:50:00Z",
+  "je9pelUrl": "https://www.ne.jp/asahi/hamradio/je9pel/satslist.htm",
+  "amsatUrl": "https://www.amsat.org/status/api/v1/summary.php?hours=720",
+  "r4uabFrequencyUrl": "https://r4uab.ru/frequency/",
+  "r4uabFrequencyDated": "2021-10-16",
+  "r4uabRows": 301,
+  "r4uabOutside": 196,
+  "heard": [
+    {
+      "satelliteId": "iss",
+      "report": "Heard",
+      "latest": "2026-10-20T05:30:00Z",
+      "count": 980,
+      "amsatName": "ISS"
+    },
+    {
+      "satelliteId": "so-50",
+      "report": "Heard",
+      "latest": "2026-10-20T04:30:00Z",
+      "count": 673,
+      "amsatName": "SO-50"
+    },
+    {
+      "satelliteId": "ao-73",
+      "report": "Telemetry Only",
+      "latest": "2026-10-20T03:30:00Z",
+      "count": 46,
+      "amsatName": "AO-73"
+    },
+    {
+      "satelliteId": "fo-29",
+      "report": "Heard",
+      "latest": "2026-10-20T03:30:00Z",
+      "count": 546,
+      "amsatName": "FO-29"
+    },
+    {
+      "satelliteId": "asrtu-1-ao-123",
+      "report": "Telemetry Only",
+      "latest": "2026-10-20T02:30:00Z",
+      "count": 57,
+      "amsatName": "AO-123"
+    },
+    {
+      "satelliteId": "umka-1-rs40s",
+      "report": "Telemetry Only",
+      "latest": "2026-10-20T02:30:00Z",
+      "count": 79,
+      "amsatName": "RS40S"
+    },
+    {
+      "satelliteId": "ao-7",
+      "report": "Heard",
+      "latest": "2026-10-20T00:30:00Z",
+      "count": 162,
+      "amsatName": "AO-7"
+    },
+    {
+      "satelliteId": "replicator-2",
+      "report": "Heard",
+      "latest": "2026-10-20T00:30:00Z",
+      "count": 38,
+      "amsatName": "Replicator-2"
+    },
+    {
+      "satelliteId": "rs-44",
+      "report": "Heard",
+      "latest": "2026-10-20T00:30:00Z",
+      "count": 1074,
+      "amsatName": "RS-44"
+    },
+    {
+      "satelliteId": "marmotsat",
+      "report": "Telemetry Only",
+      "latest": "2026-10-19T23:30:00Z",
+      "count": 36,
+      "amsatName": "CO-128"
+    },
+    {
+      "satelliteId": "otp-2",
+      "report": "Heard",
+      "latest": "2026-10-19T23:30:00Z",
+      "count": 24,
+      "amsatName": "OTP-2"
+    },
+    {
+      "satelliteId": "rs-38s",
+      "report": "Telemetry Only",
+      "latest": "2026-10-19T22:30:00Z",
+      "count": 31,
+      "amsatName": "RS38S"
+    },
+    {
+      "satelliteId": "jo-97",
+      "report": "Heard",
+      "latest": "2026-10-19T21:30:00Z",
+      "count": 258,
+      "amsatName": "JO-97"
+    },
+    {
+      "satelliteId": "es-hail-2",
+      "report": "Heard",
+      "latest": "2026-10-19T21:30:00Z",
+      "count": 456,
+      "amsatName": "QO-100"
+    },
+    {
+      "satelliteId": "crocube",
+      "report": "Heard",
+      "latest": "2026-10-19T20:30:00Z",
+      "count": 5,
+      "amsatName": "CroCube"
+    },
+    {
+      "satelliteId": "sonate-2",
+      "report": "Heard",
+      "latest": "2026-10-19T16:30:00Z",
+      "count": 110,
+      "amsatName": "SONATE-2"
+    },
+    {
+      "satelliteId": "marina",
+      "report": "Heard",
+      "latest": "2026-10-19T11:30:00Z",
+      "count": 15,
+      "amsatName": "Marina"
+    },
+    {
+      "satelliteId": "grbbeta",
+      "report": "Heard",
+      "latest": "2026-10-19T09:30:00Z",
+      "count": 28,
+      "amsatName": "GRBBeta"
+    },
+    {
+      "satelliteId": "optisat",
+      "report": "Heard",
+      "latest": "2026-10-19T02:30:00Z",
+      "count": 12,
+      "amsatName": "OPTISAT"
+    },
+    {
+      "satelliteId": "kostka",
+      "report": "Telemetry Only",
+      "latest": "2026-10-19T01:30:00Z",
+      "count": 32,
+      "amsatName": "KOSTKA"
+    },
+    {
+      "satelliteId": "lasarsat",
+      "report": "Telemetry Only",
+      "latest": "2026-10-18T15:30:00Z",
+      "count": 56,
+      "amsatName": "LASARsat"
+    },
+    {
+      "satelliteId": "monitor-4-rs57s",
+      "report": "Telemetry Only",
+      "latest": "2026-10-18T08:30:00Z",
+      "count": 7,
+      "amsatName": "RS57S"
+    },
+    {
+      "satelliteId": "qmr-kwt-2-rs95s",
+      "report": "Telemetry Only",
+      "latest": "2026-10-17T22:30:00Z",
+      "count": 16,
+      "amsatName": "RS95S"
+    },
+    {
+      "satelliteId": "origamisat-2",
+      "report": "Heard",
+      "latest": "2026-10-17T20:30:00Z",
+      "count": 2,
+      "amsatName": "FO-126"
+    },
+    {
+      "satelliteId": "knacksat-2",
+      "report": "Heard",
+      "latest": "2026-10-17T07:30:00Z",
+      "count": 31,
+      "amsatName": "KNACKSAT-2"
+    },
+    {
+      "satelliteId": "galapagos-ute-swsu",
+      "report": "Heard",
+      "latest": "2026-10-16T20:30:00Z",
+      "count": 1,
+      "amsatName": "HC1PX"
+    },
+    {
+      "satelliteId": "geoscan-5-rs92s5",
+      "report": "Telemetry Only",
+      "latest": "2026-10-16T16:30:00Z",
+      "count": 2,
+      "amsatName": "RS92S5"
+    },
+    {
+      "satelliteId": "uo-11",
+      "report": "Telemetry Only",
+      "latest": "2026-10-16T05:30:00Z",
+      "count": 4,
+      "amsatName": "UO-11"
+    },
+    {
+      "satelliteId": "ao-91",
+      "report": "Heard",
+      "latest": "2026-10-16T04:30:00Z",
+      "count": 8,
+      "amsatName": "AO-91"
+    },
+    {
+      "satelliteId": "balkan-1",
+      "report": "Heard",
+      "latest": "2026-10-16T04:30:00Z",
+      "count": 2,
+      "amsatName": "BALKAN-1"
+    },
+    {
+      "satelliteId": "cas-2t-and-ks-1q",
+      "report": "Telemetry Only",
+      "latest": "2026-10-16T04:30:00Z",
+      "count": 1,
+      "amsatName": "CAS-2T"
+    },
+    {
+      "satelliteId": "luca-rs90s",
+      "report": "Telemetry Only",
+      "latest": "2026-10-16T04:30:00Z",
+      "count": 5,
+      "amsatName": "Luca"
+    },
+    {
+      "satelliteId": "lobachevsky-rs83s",
+      "report": "Telemetry Only",
+      "latest": "2026-10-16T04:30:00Z",
+      "count": 2,
+      "amsatName": "RS83S"
+    },
+    {
+      "satelliteId": "tevel2-2",
+      "report": "Telemetry Only",
+      "latest": "2026-10-16T04:30:00Z",
+      "count": 1,
+      "amsatName": "TEVEL2-2"
+    },
+    {
+      "satelliteId": "tevel2-9",
+      "report": "Telemetry Only",
+      "latest": "2026-10-16T04:30:00Z",
+      "count": 1,
+      "amsatName": "TEVEL2-9"
+    },
+    {
+      "satelliteId": "utmn-2-rs27s",
+      "report": "Telemetry Only",
+      "latest": "2026-10-13T15:30:00Z",
+      "count": 7,
+      "amsatName": "RS27S"
+    },
+    {
+      "satelliteId": "t-microsat-1",
+      "report": "Heard",
+      "latest": "2026-10-13T06:30:00Z",
+      "count": 3,
+      "amsatName": "T.Microsat-1"
+    },
+    {
+      "satelliteId": "sakhacube-cholbon-rs18s",
+      "report": "Telemetry Only",
+      "latest": "2026-10-12T12:30:00Z",
+      "count": 12,
+      "amsatName": "RS18S"
+    },
+    {
+      "satelliteId": "monitor-3-rs58s",
+      "report": "Telemetry Only",
+      "latest": "2026-10-12T12:30:00Z",
+      "count": 6,
+      "amsatName": "RS58S"
+    },
+    {
+      "satelliteId": "arica-2",
+      "report": "Heard",
+      "latest": "2026-10-11T15:30:00Z",
+      "count": 19,
+      "amsatName": "ARICA-2"
+    },
+    {
+      "satelliteId": "tevel2-3",
+      "report": "Telemetry Only",
+      "latest": "2026-10-11T08:30:00Z",
+      "count": 2,
+      "amsatName": "TEVEL2-3"
+    },
+    {
+      "satelliteId": "diwata-2b",
+      "report": "Telemetry Only",
+      "latest": "2026-10-08T19:30:00Z",
+      "count": 2,
+      "amsatName": "PO-101"
+    },
+    {
+      "satelliteId": "tevel2-1",
+      "report": "Heard",
+      "latest": "2026-10-01T21:30:00Z",
+      "count": 1,
+      "amsatName": "TEVEL2-1"
+    },
+    {
+      "satelliteId": "foresail-1-prime",
+      "report": "Heard",
+      "latest": "2026-09-27T10:30:00Z",
+      "count": 2,
+      "amsatName": "Foresail-1p"
+    },
+    {
+      "satelliteId": "239alferov-rs61s",
+      "report": "Telemetry Only",
+      "latest": "2026-09-23T21:30:00Z",
+      "count": 1,
+      "amsatName": "RS61S"
+    },
+    {
+      "satelliteId": "pcsat-no-44",
+      "report": "Telemetry Only",
+      "latest": "2026-09-22T16:30:00Z",
+      "count": 1,
+      "amsatName": "NO-44"
+    },
+    {
+      "satelliteId": "geoscan-4-rs92s4",
+      "report": "Telemetry Only",
+      "latest": "2026-09-22T16:30:00Z",
+      "count": 1,
+      "amsatName": "RS92S4"
+    }
+  ],
+  "je9pelActiveMissing": [
+    {
+      "norad": 47941,
+      "name": "1KUNS-3",
+      "mhz": 435.31,
+      "mode": "1k2/9k6* FSK"
+    },
+    {
+      "norad": 47488,
+      "name": "Astrocast-0102",
+      "mhz": 1.531,
+      "mode": "FM"
+    },
+    {
+      "norad": 47487,
+      "name": "Astrocast-0103",
+      "mhz": 1.531,
+      "mode": "FM"
+    },
+    {
+      "norad": 47519,
+      "name": "Astrocast-0104",
+      "mhz": 1.531,
+      "mode": "FM"
+    },
+    {
+      "norad": 64887,
+      "name": "AstroLine-1",
+      "mhz": 436.865,
+      "mode": "LoRa"
+    },
+    {
+      "norad": 64888,
+      "name": "AstroLine-2",
+      "mhz": 436.725,
+      "mode": "LoRa"
+    },
+    {
+      "norad": 64886,
+      "name": "AstroLine-3",
+      "mhz": 435.865,
+      "mode": "LoRa"
+    },
+    {
+      "norad": 64889,
+      "name": "AstroLine-4",
+      "mhz": 435.365,
+      "mode": "LoRa"
+    },
+    {
+      "norad": 65729,
+      "name": "BIRDS-X",
+      "mhz": 437.375,
+      "mode": "4k8 GMSK APRS CW*"
+    },
+    {
+      "norad": 69896,
+      "name": "BRO-31",
+      "mhz": 401.735,
+      "mode": "4k8*/9k6_FSK"
+    },
+    {
+      "norad": 52739,
+      "name": "Connecta-T1_1",
+      "mhz": 401.525,
+      "mode": "9k6 GMSK"
+    },
+    {
+      "norad": 64895,
+      "name": "CSTP-4.1",
+      "mhz": 437.32,
+      "mode": "LoRa"
+    },
+    {
+      "norad": 64883,
+      "name": "CSTP-4.2",
+      "mhz": 437.24,
+      "mode": "LoRa"
+    },
+    {
+      "norad": 64884,
+      "name": "CSTP-4.4",
+      "mhz": 437.725,
+      "mode": "LoRa"
+    },
+    {
+      "norad": 53383,
+      "name": "CubeSX-HSE-2",
+      "mhz": 435.57,
+      "mode": "2k4 GMSK_USP"
+    },
+    {
+      "norad": 49263,
+      "name": "CUTE",
+      "mhz": 437.25,
+      "mode": "9k6*/19k2 GMSK 1M BPSK"
+    },
+    {
+      "norad": 43879,
+      "name": "D-Star ONE iSat",
+      "mhz": 435.525,
+      "mode": "4k8*/9k6 GMSK"
+    },
+    {
+      "norad": 43881,
+      "name": "D-Star ONE Sparrow",
+      "mhz": 435.525,
+      "mode": "4k8*/9k6 GMSK"
+    },
+    {
+      "norad": 32789,
+      "name": "DELFI-C3",
+      "mhz": 145.87,
+      "mode": "1k2 BPSK"
+    },
+    {
+      "norad": 40021,
+      "name": "Duchifat-1",
+      "mhz": 145.825,
+      "mode": "1k2 BPSK CW"
+    },
+    {
+      "norad": 54684,
+      "name": "FO-118",
+      "mhz": 435.54,
+      "mode": "VHF/UHF SSB"
+    },
+    {
+      "norad": 43937,
+      "name": "FO-99",
+      "mhz": 435.91,
+      "mode": "9k6/38k4FSK pi/4QPSK CW*"
+    },
+    {
+      "norad": 66779,
+      "name": "FossaSat-2E22",
+      "mhz": 401.7,
+      "mode": "LoRa"
+    },
+    {
+      "norad": 67483,
+      "name": "FossaSat-2E23",
+      "mhz": 401.7,
+      "mode": "LoRa"
+    },
+    {
+      "norad": 66780,
+      "name": "FossaSat-2E24",
+      "mhz": 401.7,
+      "mode": "LoRa"
+    },
+    {
+      "norad": 68478,
+      "name": "FossaSat-2E25",
+      "mhz": 401.7,
+      "mode": "LoRa"
+    },
+    {
+      "norad": 69899,
+      "name": "FossaSat-2E26",
+      "mhz": 401.7,
+      "mode": "LoRa"
+    },
+    {
+      "norad": 61757,
+      "name": "Gorizont",
+      "mhz": 435.43,
+      "mode": "9k6 GMSK CW"
+    },
+    {
+      "norad": 67684,
+      "name": "Gxiba-1",
+      "mhz": 437.3,
+      "mode": "9k6_FSK"
+    },
+    {
+      "norad": 43156,
+      "name": "HA-1",
+      "mhz": 436.95,
+      "mode": "FM 9k6 BPSK"
+    },
+    {
+      "norad": 47930,
+      "name": "Hirogari",
+      "mhz": 145.9,
+      "mode": "1k2AFSK/9k6/13k6GMSK CW"
+    },
+    {
+      "norad": 39433,
+      "name": "Humsat-D",
+      "mhz": 437.325,
+      "mode": "1k2 MSK CW"
+    },
+    {
+      "norad": 63490,
+      "name": "HYDRA-W",
+      "mhz": 437.78,
+      "mode": "200 USB"
+    },
+    {
+      "norad": 61772,
+      "name": "HyperView-1G",
+      "mhz": 436.54,
+      "mode": "2k4 GMSK_USP"
+    },
+    {
+      "norad": 51657,
+      "name": "INSPIRESat-1",
+      "mhz": 437.5,
+      "mode": "9k6 GFSK"
+    },
+    {
+      "norad": 58565,
+      "name": "INTUITION-1",
+      "mhz": 401.4,
+      "mode": "9k6 GMSK"
+    },
+    {
+      "norad": 53106,
+      "name": "IO-117",
+      "mhz": 435.31,
+      "mode": "0k3/1k2*/2k4FSK"
+    },
+    {
+      "norad": 40931,
+      "name": "IO-86",
+      "mhz": 145.825,
+      "mode": "1k2AFSK FM SSDV CW"
+    },
+    {
+      "norad": 69876,
+      "name": "ION-SCV-023",
+      "mhz": 401.415,
+      "mode": "1k2_FSK"
+    },
+    {
+      "norad": 41557,
+      "name": "LO-87",
+      "mhz": 436.445,
+      "mode": "9k6/19k2/40k0* GFSK"
+    },
+    {
+      "norad": 42725,
+      "name": "LO-90",
+      "mhz": 436.51,
+      "mode": "9k6 BPSK FM"
+    },
+    {
+      "norad": 44832,
+      "name": "MO-105",
+      "mhz": 437.15,
+      "mode": "12.5k GMSK"
+    },
+    {
+      "norad": 47964,
+      "name": "MO-110",
+      "mhz": 437.345,
+      "mode": "2GMSK CW"
+    },
+    {
+      "norad": 48868,
+      "name": "MO-112",
+      "mhz": 436.925,
+      "mode": "9k6 GMSK"
+    },
+    {
+      "norad": 57190,
+      "name": "Nanozond-1",
+      "mhz": 437,
+      "mode": "2k4/4k8/9k6* GMSK_USP"
+    },
+    {
+      "norad": 48963,
+      "name": "NAPA-2",
+      "mhz": 401.124,
+      "mode": "1k2 BPSK"
+    },
+    {
+      "norad": 51031,
+      "name": "NO-116",
+      "mhz": 436.235,
+      "mode": "500 GFSK RTTY* CW"
+    },
+    {
+      "norad": 43132,
+      "name": "PicSat",
+      "mhz": 435.525,
+      "mode": "1k2*/9k6 BPSK FM"
+    },
+    {
+      "norad": 43199,
+      "name": "Shaonian-Xing",
+      "mhz": 436.37,
+      "mode": "9k6 BPSK"
+    },
+    {
+      "norad": 43850,
+      "name": "SHIELDS-1",
+      "mhz": 400.25,
+      "mode": "9k6 GFSK"
+    },
+    {
+      "norad": 61760,
+      "name": "SITRO-AIS-41",
+      "mhz": 401.105,
+      "mode": "2k4 GMSK_USP"
+    },
+    {
+      "norad": 61756,
+      "name": "SITRO-AIS-42",
+      "mhz": 401.125,
+      "mode": "2k4 GMSK_USP"
+    },
+    {
+      "norad": 61755,
+      "name": "SITRO-AIS-43",
+      "mhz": 401.145,
+      "mode": "2k4 GMSK_USP"
+    },
+    {
+      "norad": 61748,
+      "name": "SITRO-AIS-44",
+      "mhz": 401.165,
+      "mode": "2k4 GMSK_USP"
+    },
+    {
+      "norad": 59062,
+      "name": "SITRO-AIS-51",
+      "mhz": 401.2,
+      "mode": "2k4 GMSK_USP"
+    },
+    {
+      "norad": 39134,
+      "name": "SOMP",
+      "mhz": 437.485,
+      "mode": "1k2 AFSK CW*"
+    },
+    {
+      "norad": 47445,
+      "name": "SOMP-2B",
+      "mhz": 435.6,
+      "mode": "9k6 GMSK"
+    },
+    {
+      "norad": 58468,
+      "name": "SpIRIT",
+      "mhz": 401.895,
+      "mode": "9k6 FSK"
+    },
+    {
+      "norad": 39090,
+      "name": "STRaND-1",
+      "mhz": 437.568,
+      "mode": "9k6 GMSK"
+    },
+    {
+      "norad": 69911,
+      "name": "SUCHAI-4",
+      "mhz": 437.25,
+      "mode": "4k8_FSK"
+    },
+    {
+      "norad": 53376,
+      "name": "SXC3-216",
+      "mhz": 435.67,
+      "mode": "2k4/4k8*GMSK_USP"
+    },
+    {
+      "norad": 43155,
+      "name": "Tianyi-2",
+      "mhz": 435.35,
+      "mode": "9k6 GMSK/5M OFDM"
+    },
+    {
+      "norad": 43669,
+      "name": "Tianyi-4",
+      "mhz": 435.925,
+      "mode": "9k6 GMSK/5M OFDM"
+    },
+    {
+      "norad": 61782,
+      "name": "TUSUR-GO",
+      "mhz": 437.73,
+      "mode": "9k6 GFSK CW"
+    },
+    {
+      "norad": 41935,
+      "name": "VELOX-III",
+      "mhz": 437.375,
+      "mode": "1k2 AFSK CW"
+    },
+    {
+      "norad": 51085,
+      "name": "VZLUsat-2",
+      "mhz": 437.325,
+      "mode": "1k2/4k8*/9k6 MSK"
+    },
+    {
+      "norad": 59064,
+      "name": "Zorkiy-2M-2",
+      "mhz": 401.027,
+      "mode": "2k4 GMSK_USP"
+    }
+  ],
+  "je9pelExtraOnTracked": [
+    {
+      "norad": 57179,
+      "name": "2023-091P",
+      "satelliteId": "2023-091p",
+      "je9pelName": "Norby-2",
+      "mhz": 435.6,
+      "mode": "LoRa"
+    },
+    {
+      "norad": 64882,
+      "name": "2025-155G",
+      "satelliteId": "2025-155g",
+      "je9pelName": "CSTP-4.3",
+      "mhz": 437.16,
+      "mode": "LoRa"
+    },
+    {
+      "norad": 67280,
+      "name": "2025-313AJ",
+      "satelliteId": "2025-313aj",
+      "je9pelName": "Grifon-3",
+      "mhz": 401.44,
+      "mode": "LoRa"
+    },
+    {
+      "norad": 63240,
+      "name": "AL MUNTHER",
+      "satelliteId": "al-munther",
+      "je9pelName": "Al-Munther",
+      "mhz": 436.5,
+      "mode": "1k2 BPSK FM"
+    },
+    {
+      "norad": 43798,
+      "name": "ASTROCAST 0.1",
+      "satelliteId": "astrocast-0-1",
+      "je9pelName": "Astrocast-0.1",
+      "mhz": 2403,
+      "mode": "1k2 FSK"
+    },
+    {
+      "norad": 60551,
+      "name": "BRO-14",
+      "satelliteId": "bro-14",
+      "je9pelName": "BRO-14",
+      "mhz": 401.735,
+      "mode": "9k6 FSK"
+    },
+    {
+      "norad": 60553,
+      "name": "BRO-15",
+      "satelliteId": "bro-15",
+      "je9pelName": "BRO-15",
+      "mhz": 401.735,
+      "mode": "9k6 FSK"
+    },
+    {
+      "norad": 64550,
+      "name": "BRO-18",
+      "satelliteId": "bro-18",
+      "je9pelName": "BRO-18",
+      "mhz": 401.735,
+      "mode": "4k8/9k6* FSK"
+    },
+    {
+      "norad": 52422,
+      "name": "BRO-6",
+      "satelliteId": "bro-6",
+      "je9pelName": "BRO-6",
+      "mhz": 401.735,
+      "mode": "9k6 FSK"
+    },
+    {
+      "norad": 60246,
+      "name": "CATSAT",
+      "satelliteId": "catsat",
+      "je9pelName": "CatSat",
+      "mhz": 10470,
+      "mode": "2k4*/9k6/38k4 FSK"
+    },
+    {
+      "norad": 60472,
+      "name": "CONNECTA IOT-1",
+      "satelliteId": "connecta-iot-1",
+      "je9pelName": "ConnectaIoT-1",
+      "mhz": 869.525,
+      "mode": "4k8 GMSK LoRa"
+    },
+    {
+      "norad": 67402,
+      "name": "CONNECTA IOT-15",
+      "satelliteId": "connecta-iot-15",
+      "je9pelName": "ConnectaIoT-15",
+      "mhz": 2240,
+      "mode": "4k8 GMSK"
+    },
+    {
+      "norad": 67390,
+      "name": "CONNECTA IOT-16",
+      "satelliteId": "connecta-iot-16",
+      "je9pelName": "ConnectaIoT-16",
+      "mhz": 2240,
+      "mode": "4k8 GMSK"
+    },
+    {
+      "norad": 60522,
+      "name": "CONNECTA IOT-2",
+      "satelliteId": "connecta-iot-2",
+      "je9pelName": "ConnectaIoT-2",
+      "mhz": 869.525,
+      "mode": "4k8 GMSK LoRa"
+    },
+    {
+      "norad": 60475,
+      "name": "CONNECTA IOT-3",
+      "satelliteId": "connecta-iot-3",
+      "je9pelName": "ConnectaIoT-3",
+      "mhz": 869.525,
+      "mode": "4k8 GMSK LoRa"
+    },
+    {
+      "norad": 62703,
+      "name": "CONNECTA IOT-5",
+      "satelliteId": "connecta-iot-5",
+      "je9pelName": "ConnectaIoT-5",
+      "mhz": 869.525,
+      "mode": "4k8 GMSK LoRa"
+    },
+    {
+      "norad": 62709,
+      "name": "CONNECTA IOT-6",
+      "satelliteId": "connecta-iot-6",
+      "je9pelName": "ConnectaIoT-6",
+      "mhz": 869.525,
+      "mode": "4k8 GMSK LoRa"
+    },
+    {
+      "norad": 62715,
+      "name": "CONNECTA IOT-7",
+      "satelliteId": "connecta-iot-7",
+      "je9pelName": "ConnectaIoT-7",
+      "mhz": 869.525,
+      "mode": "4k8 GMSK LoRa"
+    },
+    {
+      "norad": 62695,
+      "name": "CONNECTA IOT-8",
+      "satelliteId": "connecta-iot-8",
+      "je9pelName": "ConnectaIoT-8",
+      "mhz": 869.525,
+      "mode": "4k8 GMSK LoRa"
+    },
+    {
+      "norad": 68460,
+      "name": "COSMO",
+      "satelliteId": "cosmo",
+      "je9pelName": "COSMO",
+      "mhz": 2220,
+      "mode": "9k6/19k2_GFSK"
+    },
+    {
+      "norad": 28895,
+      "name": "CUBESAT XI-V",
+      "satelliteId": "cubesat-xi-v",
+      "je9pelName": "CO-58",
+      "mhz": 437.345,
+      "mode": "1k2 AFSK CW*"
+    },
+    {
+      "norad": 28895,
+      "name": "CUBESAT XI-V",
+      "satelliteId": "cubesat-xi-v",
+      "je9pelName": "XI-V",
+      "mhz": 437.345,
+      "mode": "1k2 AFSK CW*"
+    },
+    {
+      "norad": 67263,
+      "name": "DCS-1",
+      "satelliteId": "dcs-1",
+      "je9pelName": "DCS-1",
+      "mhz": 2,
+      "mode": ""
+    },
+    {
+      "norad": 66662,
+      "name": "E3T-1 (E3TESTER-1)",
+      "satelliteId": "e3t-1-e3tester-1",
+      "je9pelName": "SNUGLITE-III-HANA",
+      "mhz": 436.46,
+      "mode": "9k6 GMSK"
+    },
+    {
+      "norad": 66662,
+      "name": "E3T-1 (E3TESTER-1)",
+      "satelliteId": "e3t-1-e3tester-1",
+      "je9pelName": "SNUGLITE-III-HANA",
+      "mhz": 2405,
+      "mode": "9k6 GMSK"
+    },
+    {
+      "norad": 68419,
+      "name": "FEMTO-1",
+      "satelliteId": "femto-1",
+      "je9pelName": "ARQSAT-1",
+      "mhz": 400.5,
+      "mode": "9k6_GMSK"
+    },
+    {
+      "norad": 68419,
+      "name": "FEMTO-1",
+      "satelliteId": "femto-1",
+      "je9pelName": "FEMTO-1",
+      "mhz": 400.5,
+      "mode": "9k6_GMSK"
+    },
+    {
+      "norad": 39444,
+      "name": "FUNCUBE-1 (AO-73)",
+      "satelliteId": "ao-73",
+      "je9pelName": "AO-73",
+      "mhz": 145.97,
+      "mode": "1k2 BPSK SSB"
+    },
+    {
+      "norad": 39444,
+      "name": "FUNCUBE-1 (AO-73)",
+      "satelliteId": "ao-73",
+      "je9pelName": "FUNcube-1",
+      "mhz": 145.97,
+      "mode": "1k2 BPSK SSB"
+    },
+    {
+      "norad": 69000,
+      "name": "GEMINI-POLLUX",
+      "satelliteId": "gemini-pollux",
+      "je9pelName": "Gemini-Pollux",
+      "mhz": 437.2,
+      "mode": "1k2*/9k6_BPSK FM"
+    },
+    {
+      "norad": 25544,
+      "name": "ISS (ZARYA)",
+      "satelliteId": "iss",
+      "je9pelName": "ISS",
+      "mhz": 437.825,
+      "mode": "1k2 AFSK APRS"
+    },
+    {
+      "norad": 24278,
+      "name": "JAS-2 (FO-29)",
+      "satelliteId": "fo-29",
+      "je9pelName": "FO-29",
+      "mhz": 435.9,
+      "mode": "SSB* CW"
+    },
+    {
+      "norad": 24278,
+      "name": "JAS-2 (FO-29)",
+      "satelliteId": "fo-29",
+      "je9pelName": "JAS-2",
+      "mhz": 435.9,
+      "mode": "SSB* CW"
+    },
+    {
+      "norad": 49402,
+      "name": "KOSEN-1",
+      "satelliteId": "kosen-1",
+      "je9pelName": "KOSEN-1",
+      "mhz": 21.125,
+      "mode": "1k2AFSK/9k6FSK CW*"
+    },
+    {
+      "norad": 66777,
+      "name": "LUNA-1",
+      "satelliteId": "luna-1",
+      "je9pelName": "LUNA-1",
+      "mhz": 401.725,
+      "mode": "9k6_GMSK"
+    },
+    {
+      "norad": 60209,
+      "name": "MESAT1",
+      "satelliteId": "mesat1",
+      "je9pelName": "MESAT-1",
+      "mhz": 435.81,
+      "mode": "1k2 BPSK SSB"
+    },
+    {
+      "norad": 60209,
+      "name": "MESAT1",
+      "satelliteId": "mesat1",
+      "je9pelName": "MO-122",
+      "mhz": 435.81,
+      "mode": "1k2 BPSK SSB"
+    },
+    {
+      "norad": 69936,
+      "name": "OASIS ALPHA",
+      "satelliteId": "oasis-alpha",
+      "je9pelName": "IPoS-TDsM",
+      "mhz": 401.5,
+      "mode": "9k6_GFSK"
+    },
+    {
+      "norad": 69936,
+      "name": "OASIS ALPHA",
+      "satelliteId": "oasis-alpha",
+      "je9pelName": "IPoS-TDsM",
+      "mhz": 2222,
+      "mode": "9k6_GFSK"
+    },
+    {
+      "norad": 7530,
+      "name": "OSCAR 7 (AO-7)",
+      "satelliteId": "ao-7",
+      "je9pelName": "AO-7",
+      "mhz": 29.4,
+      "mode": "A"
+    },
+    {
+      "norad": 7530,
+      "name": "OSCAR 7 (AO-7)",
+      "satelliteId": "ao-7",
+      "je9pelName": "AO-7",
+      "mhz": 145.97,
+      "mode": "B C"
+    },
+    {
+      "norad": 68456,
+      "name": "PARUS-6U1",
+      "satelliteId": "parus-6u1",
+      "je9pelName": "PARUS-T3",
+      "mhz": 145.825,
+      "mode": "1k2_AFSK 9k6*GMSK FM"
+    },
+    {
+      "norad": 68456,
+      "name": "PARUS-6U1",
+      "satelliteId": "parus-6u1",
+      "je9pelName": "PARUS-6U1",
+      "mhz": 145.825,
+      "mode": "1k2_AFSK 9k6*GMSK FM"
+    },
+    {
+      "norad": 57191,
+      "name": "POLYTECH-UNIVERSE 3 (RS46S)",
+      "satelliteId": "polytech-universe-3-rs46s",
+      "je9pelName": "Polytech-Universe-3",
+      "mhz": 435.415,
+      "mode": "LoRa/FSK"
+    },
+    {
+      "norad": 69923,
+      "name": "RAFS",
+      "satelliteId": "rafs",
+      "je9pelName": "RAFS",
+      "mhz": 401.85,
+      "mode": "4k8_FSK"
+    },
+    {
+      "norad": 69923,
+      "name": "RAFS",
+      "satelliteId": "rafs",
+      "je9pelName": "RAFS",
+      "mhz": 401.95,
+      "mode": "4k8_FSK"
+    },
+    {
+      "norad": 69923,
+      "name": "RAFS",
+      "satelliteId": "rafs",
+      "je9pelName": "RAFS",
+      "mhz": 2285.5,
+      "mode": "4k8_FSK"
+    },
+    {
+      "norad": 44909,
+      "name": "RS-44 & BREEZE-KM R/B",
+      "satelliteId": "rs-44",
+      "je9pelName": "DOSAAF-85",
+      "mhz": 435.67,
+      "mode": "SSB CW*"
+    },
+    {
+      "norad": 67293,
+      "name": "SCORPION (RS89S)",
+      "satelliteId": "scorpion-rs89s",
+      "je9pelName": "Scorpion",
+      "mhz": 436.65,
+      "mode": "1k2_AFSK"
+    },
+    {
+      "norad": 67293,
+      "name": "SCORPION (RS89S)",
+      "satelliteId": "scorpion-rs89s",
+      "je9pelName": "Scorpion",
+      "mhz": 2410,
+      "mode": "1k2_AFSK"
+    },
+    {
+      "norad": 55104,
+      "name": "SHARJAHSAT-1",
+      "satelliteId": "sharjahsat-1",
+      "je9pelName": "SharjahSat-1",
+      "mhz": 2405,
+      "mode": "256/1k2/9k6* GMSK"
+    },
+    {
+      "norad": 59066,
+      "name": "SITRO-AIS 25",
+      "satelliteId": "sitro-ais-25",
+      "je9pelName": "SITRO-AIS-25",
+      "mhz": 401.26,
+      "mode": "2k4 GMSK_USP"
+    },
+    {
+      "norad": 59067,
+      "name": "SITRO-AIS 26",
+      "satelliteId": "sitro-ais-26",
+      "je9pelName": "SITRO-AIS-26",
+      "mhz": 401.29,
+      "mode": "2k4 GMSK_USP"
+    },
+    {
+      "norad": 59068,
+      "name": "SITRO-AIS 27",
+      "satelliteId": "sitro-ais-27",
+      "je9pelName": "SITRO-AIS-27",
+      "mhz": 401.32,
+      "mode": "2k4 GMSK_USP"
+    },
+    {
+      "norad": 59071,
+      "name": "SITRO-AIS 28",
+      "satelliteId": "sitro-ais-28",
+      "je9pelName": "SITRO-AIS-28",
+      "mhz": 401.35,
+      "mode": "2k4 GMSK_USP"
+    },
+    {
+      "norad": 61780,
+      "name": "SITRO-AIS 37",
+      "satelliteId": "sitro-ais-37",
+      "je9pelName": "SITRO-AIS-37",
+      "mhz": 401.025,
+      "mode": "2k4 GMSK_USP"
+    },
+    {
+      "norad": 57176,
+      "name": "SITRO-AIS 5 (KATYS)",
+      "satelliteId": "sitro-ais-5-katys",
+      "je9pelName": "SITRO-AIS-5",
+      "mhz": 401.134,
+      "mode": "2k4 GMSK_USP"
+    },
+    {
+      "norad": 66661,
+      "name": "SNUGLITE-III",
+      "satelliteId": "snuglite-iii",
+      "je9pelName": "SNUGLITE-III-DURI",
+      "mhz": 2405,
+      "mode": "9k6 GMSK"
+    },
+    {
+      "norad": 33498,
+      "name": "STARS (KUKAI)",
+      "satelliteId": "stars-kukai",
+      "je9pelName": "STARS-mother",
+      "mhz": 437.305,
+      "mode": "1k2 FM CW*"
+    },
+    {
+      "norad": 33498,
+      "name": "STARS (KUKAI)",
+      "satelliteId": "stars-kukai",
+      "je9pelName": "STARS-daughter",
+      "mhz": 437.465,
+      "mode": "1k2 FM CW*"
+    },
+    {
+      "norad": 33498,
+      "name": "STARS (KUKAI)",
+      "satelliteId": "stars-kukai",
+      "je9pelName": "STARS-mother",
+      "mhz": 437.485,
+      "mode": "1k2 FM CW*"
+    },
+    {
+      "norad": 43804,
+      "name": "SUOMI-100",
+      "satelliteId": "suomi-100",
+      "je9pelName": "Suomi-100",
+      "mhz": 2410,
+      "mode": "9k6 FSK"
+    },
+    {
+      "norad": 68261,
+      "name": "TEN-KOH 2",
+      "satelliteId": "ten-koh-2",
+      "je9pelName": "Ten-Koh2",
+      "mhz": 435.875,
+      "mode": "4k8-38k4_GMSK SSB CW*"
+    },
+    {
+      "norad": 68261,
+      "name": "TEN-KOH 2",
+      "satelliteId": "ten-koh-2",
+      "je9pelName": "Ten-Koh2",
+      "mhz": 435.895,
+      "mode": "4k8-38k4_GMSK SSB CW*"
+    },
+    {
+      "norad": 57172,
+      "name": "UMKA 1 (RS40S)",
+      "satelliteId": "umka-1-rs40s",
+      "je9pelName": "UmKA-1",
+      "mhz": 435.825,
+      "mode": "2k4/4k8/9k6*GMSK_USP SSTV"
+    },
+    {
+      "norad": 57172,
+      "name": "UMKA 1 (RS40S)",
+      "satelliteId": "umka-1-rs40s",
+      "je9pelName": "UmKA-1",
+      "mhz": 2402,
+      "mode": "2k4/4k8/9k6*GMSK_USP SSTV"
+    },
+    {
+      "norad": 57203,
+      "name": "UTMN 2 (RS27S)",
+      "satelliteId": "utmn-2-rs27s",
+      "je9pelName": "UTMN-2",
+      "mhz": 435.485,
+      "mode": "2k4/4k8*/9k6 GMSK_USP"
+    },
+    {
+      "norad": 43880,
+      "name": "UWE-4",
+      "satelliteId": "uwe-4",
+      "je9pelName": "UWE-4",
+      "mhz": 437.375,
+      "mode": "9k6 FSK"
+    },
+    {
+      "norad": 43880,
+      "name": "UWE-4",
+      "satelliteId": "uwe-4",
+      "je9pelName": "UWE-4",
+      "mhz": 437.385,
+      "mode": "9k6 FSK"
+    },
+    {
+      "norad": 57800,
+      "name": "XRISM",
+      "satelliteId": "xrism",
+      "je9pelName": "LEV-1",
+      "mhz": 437.41,
+      "mode": "CW"
+    }
+  ]
+}

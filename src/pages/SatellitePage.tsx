@@ -4,6 +4,7 @@ import { LogForm } from "../components/LogForm";
 import { PassSky } from "../components/PassSky";
 import { TleBlock } from "../components/TleBlock";
 import { TuningStrip } from "../components/TuningStrip";
+import { heardReport, reportDate } from "../data/activity";
 import { catalogue, satelliteById } from "../data/catalogue";
 import { simplestAntenna, stationCovers } from "../data/equipment";
 import { usePasses } from "../hooks/usePasses";
@@ -28,6 +29,7 @@ export function SatellitePage() {
     satelliteIds: satellite ? [satellite.id] : [],
   });
   if (!satellite) return <section className="panel"><h1>Unknown satellite</h1><Link to="/satellites">Back to the catalogue</Link></section>;
+  const heard = heardReport(satellite.id);
   const logs = store.logs.filter((log) => log.satelliteId === satellite.id);
   const watched = store.watchlist.includes(satellite.id);
   const receivable = satellite.transmitters.some((item) => stationCovers(store.profile.receiverIds, store.profile.antennaId, item.downlinkHz));
@@ -42,6 +44,9 @@ export function SatellitePage() {
       <p className="lede">{satellite.summary}</p>
       <p className="muted">NORAD {satellite.norad} · {satellite.cospar} · {satellite.operator}</p>
       <p className="muted">Status in this catalogue: {satellite.status}. That describes the mission record, not a live transmitter check.</p>
+      {heard && (
+        <p className="muted">AMSAT listeners reported {heard.report} on {reportDate(heard.latest)}. Source: the AMSAT status rollup for the previous 30 days.</p>
+      )}
       <div className="row">
         <span className={`pill ${receivable ? "decoded" : "missing"}`}>{receivable ? "Receivable" : "Not receivable"}</span>
         {suggested && (

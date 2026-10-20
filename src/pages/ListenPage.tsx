@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { LogForm } from "../components/LogForm";
 import { PassSky } from "../components/PassSky";
 import { TuningStrip } from "../components/TuningStrip";
+import { heardReport, reportDate } from "../data/activity";
 import { events } from "../data/events";
 import { satellites } from "../data/catalogue";
 import { antennaById, simplestAntenna, stationCovers } from "../data/equipment";
@@ -33,7 +34,7 @@ export function ListenPage() {
   const { store, toggleWatch, addLog, addReminder } = useLogbook();
   const { profile } = store;
   const [window, setWindow] = useState<TimeWindow>("6h");
-  const [reach, setReach] = useState<"all" | "receivable" | "hidden">("all");
+  const [reach, setReach] = useState<"all" | "receivable" | "hidden" | "heard">("all");
   const [query, setQuery] = useState("");
   const [logging, setLogging] = useState<{ satelliteId: string; transmitterId: string | null; eventId: string | null } | null>(null);
   const range = useMemo(() => rangeFor(window, profile.timeZone), [window, profile.timeZone]);
@@ -78,6 +79,7 @@ export function ListenPage() {
     return cards.filter((card) => {
       if (reach === "receivable" && !card.receivable) return false;
       if (reach === "hidden" && card.receivable) return false;
+      if (reach === "heard" && !heardReport(card.satellite.id)) return false;
       if (!needle) return true;
       return card.satellite.name.toLowerCase().includes(needle)
         || String(card.satellite.norad).includes(needle)
@@ -113,6 +115,7 @@ export function ListenPage() {
           ["all", "All"],
           ["receivable", "Receivable"],
           ["hidden", "Not receivable"],
+          ["heard", "Heard recently"],
         ] as const).map(([id, label]) => (
           <button key={id} className={reach === id ? "on" : "ghost"} type="button" onClick={() => setReach(id)}>
             {label}
@@ -189,19 +192,53 @@ function PassCard(props: {
   onRemind: () => void;
   onLog: () => void;
 }) {
+  const [open, setOpen] = useState(false);
   const shift = props.pass && props.transmitter ? dopplerShiftHz(props.transmitter.downlinkHz, props.pass.dopplerFactor) : null;
   const others = props.transmitters.filter((item) => item.id !== props.transmitter?.id);
+  const outcome = props.transmitter ? expectedOutcome(props.transmitter) : null;
+  const heard = heardReport(props.satelliteId);
   return (
-    <article className="pass">
-      <div className="pass-top">
-        <div>
-          <h2>
-            <Link to={`/satellite/${props.satelliteId}`}>{props.name}</Link>
-          </h2>
-          <p className="muted">NORAD {props.norad}</p>
+    <article
+      className={`pass${open ? " is-open" : ""}`}
+      onClick={(event) => {
+        const target = event.target as HTMLElement;
+        if (target.closest("a, button, input, select, textarea, .pass-detail")) return;
+        setOpen((current) => !current);
+      }}
+    >
+      <div className="pass-summary">
+        <div className="pass-top">
+          <div>
+            <h2>
+              <Link to={`/satellite/${props.satelliteId}`}>{props.name}</Link>
+            </h2>
+            <p className="muted">NORAD {props.norad}</p>
+          </div>
+          <span className={`pill ${props.receivable ? "decoded" : "missing"}`}>{props.receivable ? "Receivable" : "Not receivable"}</span>
         </div>
-        <span className={`pill ${props.receivable ? "decoded" : "missing"}`}>{props.receivable ? "Receivable" : "Not receivable"}</span>
+        <p className="pass-facts">
+          {props.transmitter && <span>{formatFrequency(props.transmitter.downlinkHz)}</span>}
+          {props.transmitter?.mode && <span>{props.transmitter.mode}</span>}
+          {outcome && <span>{outcome.label}</span>}
+          {heard && <span>Heard {reportDate(heard.latest)}</span>}
+        </p>
+        {props.pass ? (
+          <p className="when">
+            {formatWhen(props.pass.aos, props.timeZone)} – {formatClock(props.pass.los, props.timeZone)} · max {formatElevation(props.pass.maxElevation)}
+          </p>
+        ) : (
+          <p className="muted">No pass above {props.minElevation}° in this window.</p>
+        )}
+        <button
+          type="button"
+          className="ghost pass-more"
+          aria-expanded={open}
+          onClick={() => setOpen((current) => !current)}
+        >
+          {open ? "Hide" : "Details"}
+        </button>
       </div>
+      {open && <div className="pass-detail">
       {props.transmitter && <TuningStrip transmitter={props.transmitter} dialHz={shift === null ? null : props.transmitter.downlinkHz + shift} />}
       {others.length > 0 && (
         <p className="also muted">
@@ -214,17 +251,10 @@ function PassCard(props: {
       )}
       <div className="pass-layout">
         <div>
-          {props.pass ? (
-            <>
-              <p className="when">
-                {formatWhen(props.pass.aos, props.timeZone)} – {formatClock(props.pass.los, props.timeZone)}
-              </p>
-              <p>
-                AOS {formatAzimuth(props.pass.aosAzimuth)} · max {formatElevation(props.pass.maxElevation)} · LOS {formatAzimuth(props.pass.losAzimuth)} · {formatDuration(props.pass.durationSec)}
-              </p>
-            </>
-          ) : (
-            <p className="muted">No pass above {props.minElevation}° in this window.</p>
+          {props.pass && (
+            <p>
+              AOS {formatAzimuth(props.pass.aosAzimuth)} · max {formatElevation(props.pass.maxElevation)} · LOS {formatAzimuth(props.pass.losAzimuth)} · {formatDuration(props.pass.durationSec)}
+            </p>
           )}
           {props.transmitter && <p className="muted">{props.transmitter.description}</p>}
           {props.pass && props.transmitter && (
@@ -262,6 +292,7 @@ function PassCard(props: {
         <button type="button" className="ghost" onClick={props.onWatch}>{props.watched ? "On watchlist" : "Add to watchlist"}</button>
         <button type="button" className="ghost" onClick={props.onLog}>Log reception</button>
       </div>
+      </div>}
     </article>
   );
 }
