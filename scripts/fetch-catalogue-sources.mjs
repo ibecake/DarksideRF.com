@@ -1,10 +1,11 @@
-import { writeFileSync } from "node:fs";
+import { mkdirSync, writeFileSync } from "node:fs";
 import { setTimeout as delay } from "node:timers/promises";
 
 // Download the SatNOGS lists and CelesTrak GP groups that build-catalogue.mjs reads.
 // A required group must succeed. An optional group that fails is marked Invalid and skipped.
 
 const cache = process.argv[2] ?? "/tmp";
+mkdirSync(cache, { recursive: true });
 const agent = "DarksideRF-catalogue/1.0 (https://github.com/ibecake/DarksideRF.com)";
 const groups = [
   "active", "amateur", "weather", "science", "stations", "cubesat", "satnogs",
