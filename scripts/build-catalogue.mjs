@@ -19,7 +19,12 @@ const previous = JSON.parse(readFileSync(new URL("../src/data/catalogue.json", i
 
 const orbits = new Map();
 for (const group of groups) {
-  const raw = readFileSync(`${cache}/gp-${group}.json`, "utf8");
+  let raw;
+  try {
+    raw = readFileSync(`${cache}/gp-${group}.json`, "utf8");
+  } catch {
+    continue;
+  }
   if (raw.startsWith("Invalid")) continue;
   for (const orbit of JSON.parse(raw)) {
     if (!orbits.has(orbit.NORAD_CAT_ID)) orbits.set(orbit.NORAD_CAT_ID, orbit);
@@ -146,7 +151,9 @@ for (const [norad, items] of grouped) {
 }
 
 for (const satellite of previous.satellites) {
-  if (!satellites.some((item) => item.norad === satellite.norad)) satellites.push(satellite);
+  if (satellites.some((item) => item.norad === satellite.norad)) continue;
+  const orbit = orbits.get(satellite.norad);
+  satellites.push(orbit ? { ...satellite, cospar: orbit.OBJECT_ID || satellite.cospar, omm: ommFrom(orbit) } : satellite);
 }
 
 satellites.sort((a, b) => a.name.localeCompare(b.name));
