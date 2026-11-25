@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Icon } from "../components/Icons";
 import { LogForm } from "../components/LogForm";
+import { MissionBadge } from "../components/MissionBadge";
 import { satelliteById } from "../data/catalogue";
 import { useLogbook } from "../hooks/useStore";
 import { achievementsFor, collectedSatelliteIds, decodedSatelliteIds, sstvDecodeCount } from "../lib/collection";
@@ -25,6 +26,8 @@ export function CollectionPage() {
   const collected = collectedSatelliteIds(store.logs);
   const decoded = decodedSatelliteIds(store.logs);
   const sstv = sstvDecodeCount(store.logs);
+  const achievements = achievementsFor(store.logs);
+  const earned = achievements.filter((item) => item.earned).length;
   const example = showExample && store.logs.length === 0;
 
   return (
@@ -43,6 +46,21 @@ export function CollectionPage() {
         <Stat value={example ? "28" : String(store.logs.length)} label="Reception logs" />
         <Stat value={example ? "3" : String(sstv)} label="SSTV images" />
       </div>
+
+      <div className="section-line" id="missions">
+        <div>
+          <h2>Mission badges</h2>
+          <p className="muted mission-lede">
+            {earned}/{achievements.length} complete. Each badge is a listening mission, earned from real logbook entries.
+          </p>
+        </div>
+      </div>
+      <div className="mission-grid">
+        {achievements.map((item) => (
+          <MissionBadge key={item.slug} achievement={item} size="md" />
+        ))}
+      </div>
+
       <div className="section-line">
         <h2>My satellite collection</h2>
         {example ? <span className="example-tag">Example</span> : <button type="button" onClick={() => setLogging(true)}>I heard a signal</button>}
@@ -89,15 +107,6 @@ export function CollectionPage() {
           <ul className="logs">
             {store.logs.map((log) => (
               <LogRow key={log.id} log={log} timeZone={store.profile.timeZone} onStatus={(receptionStatus) => updateLog(log.id, { receptionStatus })} onDelete={() => deleteLog(log.id)} />
-            ))}
-          </ul>
-          <h2>Achievements</h2>
-          <ul className="achievements">
-            {achievementsFor(store.logs).map((item) => (
-              <li key={item.slug} className={item.earned ? "earned" : ""}>
-                <strong>{item.title}</strong>
-                <span>{item.description}</span>
-              </li>
             ))}
           </ul>
           <Link to="/collection/sets">Themed sets</Link>

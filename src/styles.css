@@ -52,7 +52,7 @@ h2, .pass h2 a { overflow-wrap: anywhere; }
   display: flex;
   justify-content: space-between;
   gap: 1rem;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 0.75rem;
 }
 
@@ -61,6 +61,7 @@ h2, .pass h2 a { overflow-wrap: anywhere; }
   margin: 0;
   line-height: 0;
   text-decoration: none;
+  flex: none;
 }
 .brand img {
   width: 132px;
@@ -71,12 +72,236 @@ h2, .pass h2 a { overflow-wrap: anywhere; }
 nav {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
+  gap: 0.85rem 1.1rem;
   font-size: 0.92rem;
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+
+.nav-group {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.nav-label {
+  color: #666;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.nav-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem 0.75rem;
 }
 
 nav a { color: var(--muted); text-decoration: none; }
 nav a.active { color: var(--ink); }
+
+.nav-group.highlight {
+  padding: 0.45rem 0.65rem;
+  border: 1px solid #2f4a38;
+  border-radius: 12px;
+  background: linear-gradient(160deg, #122018 0%, #0c0c0c 100%);
+}
+
+.nav-group.highlight .nav-label { color: var(--green); }
+.nav-group.highlight a { color: #cfe8d8; }
+.nav-group.highlight a.active { color: var(--green); }
+
+.profile-rail {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 0.75rem;
+  margin: 0 0 1rem;
+}
+
+.profile-card,
+.profile-missions {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: linear-gradient(165deg, #121212 0%, #0a0a0a 70%);
+  padding: 0.85rem 0.95rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.profile-station {
+  display: grid;
+  gap: 0.2rem;
+  text-decoration: none;
+  color: inherit;
+  margin: 0.15rem 0 0.65rem;
+}
+
+.profile-station strong {
+  font-size: 1.15rem;
+  letter-spacing: -0.02em;
+}
+
+.profile-station span {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.profile-missions-cta {
+  color: var(--green);
+  font-size: 0.85rem;
+}
+
+.profile-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem 0.85rem;
+  font-size: 0.88rem;
+}
+
+.profile-actions a { color: var(--green); text-decoration: none; }
+
+.profile-missions {
+  display: grid;
+  gap: 0.55rem;
+  align-content: start;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.profile-missions:hover {
+  border-color: #3a5a45;
+  transform: translateY(-1px);
+}
+
+.profile-overview-card { margin: 1rem 0 1.2rem; }
+
+.mission-lede { margin: 0.25rem 0 0; max-width: 36rem; }
+
+.mission-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 0 0 0.4rem;
+}
+
+.mission-badge {
+  display: grid;
+  justify-items: center;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0.95rem 0.65rem 0.9rem;
+  border-radius: 14px;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(61, 220, 132, 0.06), transparent 55%),
+    var(--card);
+  border: 1px solid transparent;
+  text-align: center;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.mission-patch {
+  width: 4.6rem;
+  height: 4.6rem;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.45));
+}
+
+.mission-patch svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.mission-badge.size-sm .mission-patch {
+  width: 2.55rem;
+  height: 2.55rem;
+  filter: none;
+}
+
+.mission-badge.size-lg .mission-patch {
+  width: 6rem;
+  height: 6rem;
+}
+
+.mission-badge.earned {
+  border-color: #2f4a38;
+  box-shadow: inset 0 0 0 1px rgba(61, 220, 132, 0.08);
+}
+
+.mission-badge.earned:hover { transform: translateY(-2px); }
+.mission-badge.earned .mission-patch {
+  animation: mission-pulse 2.8s ease-in-out infinite;
+}
+
+.mission-badge.locked { opacity: 0.82; }
+
+.mission-badge figcaption {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.mission-badge strong {
+  font-size: 0.95rem;
+  font-weight: 560;
+}
+
+.mission-badge span {
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
+.mission-badge.earned span { color: var(--green); }
+
+@keyframes mission-pulse {
+  0%, 100% { filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.45)); }
+  50% { filter: drop-shadow(0 0 10px rgba(61, 220, 132, 0.35)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mission-badge.earned .mission-patch { animation: none; }
+}
+
+.mission-strip-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  align-items: baseline;
+}
+
+.mission-strip-head strong { font-size: 0.95rem; }
+
+.mission-strip-badges {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem 0.65rem;
+  margin: 0.45rem 0 0;
+  padding: 0;
+}
+
+.mission-strip-badges li {
+  display: grid;
+  justify-items: center;
+  gap: 0.2rem;
+}
+
+.mission-strip-label {
+  color: var(--muted);
+  font-size: 0.68rem;
+  text-align: center;
+  max-width: 4.6rem;
+  line-height: 1.2;
+}
+
+.mission-strip.compact .mission-strip-badges { gap: 0.25rem; }
+
+.mission-badge.size-sm {
+  padding: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+.mission-badge.size-sm.earned:hover { transform: none; }
 
 .panel {
   border: 1px solid var(--line);
@@ -400,19 +625,19 @@ input, select, textarea {
   padding: 0.45rem 0.55rem;
 }
 
-.achievements { display: grid; gap: 0.45rem; }
-.achievements li { display: flex; justify-content: space-between; gap: 1rem; color: var(--muted); }
-.achievements .earned { color: var(--ink); }
-
 @media (max-width: 720px) {
   .frame { width: min(980px, calc(100% - 1rem)); margin: 0.6rem auto 2rem; }
   .panel { padding: 1rem 0.8rem 0.9rem; border-radius: 14px; }
   .banner { font-size: 0.82rem; }
   .brand img { width: 112px; height: 112px; }
-  .card-grid, .stats, .pass-layout, .map-layout { grid-template-columns: 1fr; }
+  .card-grid, .stats, .pass-layout, .map-layout, .profile-rail { grid-template-columns: 1fr; }
+  .mission-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .stats.quad { grid-template-columns: 1fr 1fr; }
   .top { flex-direction: column; align-items: center; }
   .top nav { width: 100%; justify-content: center; }
+  .nav-group { width: 100%; }
+  .nav-group.highlight { width: 100%; }
+  .nav-links { justify-content: center; }
   .pass-summary { cursor: pointer; }
   .panel-head, .logs li, .directory li, .transmitters li { align-items: flex-start; flex-direction: column; }
   .filters input { flex-basis: 100%; }
