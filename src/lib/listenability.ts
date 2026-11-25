@@ -70,7 +70,7 @@ export function assess(
   const receiverReason = receiver
     ? `${receiver.name} covers this frequency and mode.`
     : blockedByMode
-      ? `A selected receiver reaches this frequency, but none demodulate ${transmitter.mode ?? "this mode"}.`
+      ? `A selected receiver reaches this frequency, but none support the RF demod for ${transmitter.mode ?? "this mode"}.`
       : "None of the selected receivers cover this frequency.";
   const reasons = [
     transmitter.alive ? "SatNOGS lists this downlink as active." : "SatNOGS does not currently mark this downlink alive.",
