@@ -245,6 +245,55 @@ export const antennas: AntennaModel[] = [
       "Weather-satellite APT near 137 MHz sits below the usual 2 m cut. Use a V-dipole there instead.",
     ],
   },
+  {
+    id: "discovery-dish-lband",
+    name: "Discovery Dish (L-band weather feed)",
+    bands: [{ minHz: mhz(1645), maxHz: mhz(1715) }],
+    marginalBands: [{ minHz: mhz(1620), maxHz: mhz(1645) }],
+    polarisation: "Linear; rotate the feed for skew",
+    directionality: "Parabolic dish, pointed at the satellite",
+    notes:
+      "KrakenRF Discovery Dish with the L-band weather feed: SAW filters centred near 1680 MHz (~69 MHz wide). Meant for GOES HRIT, GK-2A / FengYun LRIT, and polar HRPT around 1.69 GHz. Needs a bias-tee capable SDR and aiming.",
+    buildSummary: "A 70 cm petal dish with a swappable active feed. Use the L-band weather feed for 1.69 GHz weather downlinks.",
+    buildSteps: [
+      "Assemble the three dish petals and mount the feed arm so the feed sits at the focus.",
+      "Fit the L-band weather feed (SAW passband around 1680 MHz). The feed wants 5 V bias-tee power from the SDR or an injector.",
+      "Point the dish at the satellite. GEO weather birds stay fixed; polar HRPT needs a rotator or hand tracking.",
+      "Decode with SatDump or similar. A whip or V-dipole will not replace this dish on L-band.",
+    ],
+  },
+  {
+    id: "discovery-dish-inmarsat",
+    name: "Discovery Dish (Inmarsat feed)",
+    bands: [{ minHz: mhz(1525), maxHz: mhz(1660) }],
+    marginalBands: [],
+    polarisation: "Linear feed on circular downlinks (about 3 dB loss)",
+    directionality: "Parabolic dish, pointed at the satellite",
+    notes:
+      "Same Discovery Dish body with the Inmarsat feed (1525–1660 MHz) for STD-C and AERO. Not a weather-satellite L-band feed — swap feeds when you change mission.",
+    buildSummary: "Discovery Dish plus the Inmarsat active feed for 1.5 GHz maritime / aero downlinks.",
+    buildSteps: [
+      "Swap to the Inmarsat feed arm on the Discovery Dish.",
+      "Supply bias-tee power and aim at the Inmarsat bird you want.",
+      "Decode with tools such as JAERO or Scytale-C for the service you are after.",
+    ],
+  },
+  {
+    id: "discovery-dish-hline",
+    name: "Discovery Dish (hydrogen-line feed)",
+    bands: [{ minHz: mhz(1410), maxHz: mhz(1430) }],
+    marginalBands: [{ minHz: mhz(1400), maxHz: mhz(1410) }, { minHz: mhz(1430), maxHz: mhz(1440) }],
+    polarisation: "Linear",
+    directionality: "Parabolic dish, aimed at the sky region of interest",
+    notes:
+      "Discovery Dish with the 1.42 GHz hydrogen-line feed for beginner radio astronomy. This is not a weather or amateur downlink antenna.",
+    buildSummary: "Discovery Dish plus the 1.42 GHz hydrogen-line feed for galactic hydrogen observations.",
+    buildSteps: [
+      "Fit the hydrogen-line feed and bias-tee power.",
+      "Aim at the sky region you want to integrate. Motion and RFI matter more than for a strong weather bird.",
+      "Use radio-astronomy software suited to a narrow 1.42 GHz passband.",
+    ],
+  },
 ];
 
 export function receiverById(id: string): ReceiverModel | undefined {
@@ -273,18 +322,33 @@ export function receiverCovers(receiver: ReceiverModel, hz: number, mode: string
   return covers(receiver.bands, hz) && receiverSupportsMode(receiver, mode);
 }
 
-export function stationCovers(receiverIds: string[], antennaId: string, hz: number, mode: string | null = null): boolean {
-  const antenna = antennaById(antennaId);
+export function stationAntennas(antennaIds: string[]): AntennaModel[] {
+  return antennaIds.map((id) => antennaById(id)).filter((antenna): antenna is AntennaModel => Boolean(antenna));
+}
+
+export function bestStationAntenna(antennaIds: string[], hz: number): AntennaModel | null {
+  const selected = stationAntennas(antennaIds);
+  return selected.find((antenna) => covers(antenna.bands, hz))
+    ?? selected.find((antenna) => covers(antenna.marginalBands, hz))
+    ?? null;
+}
+
+export function stationCovers(receiverIds: string[], antennaIds: string[], hz: number, mode: string | null = null): boolean {
   const receiverOk = receiverIds.some((id) => {
     const receiver = receiverById(id);
     return receiver ? receiverCovers(receiver, hz, mode) : false;
   });
-  const antennaOk = antenna ? covers(antenna.bands, hz) : false;
+  const antennaOk = stationAntennas(antennaIds).some((antenna) => covers(antenna.bands, hz));
   return receiverOk && antennaOk;
 }
 
 export function simplestAntenna(hz: number): AntennaModel {
   if (hz < 30e6) return antennaById("random-wire") ?? antennas[0];
-  if (hz >= 1e9) return antennaById("yagi") ?? antennas[0];
+  if (hz >= mhz(1400) && hz <= mhz(1800)) return antennaById("discovery-dish-lband") ?? antennas[0];
+  if (hz >= 1e9) return antennaById("discovery-dish-lband") ?? antennas[0];
   return antennaById("v-dipole") ?? antennas[0];
+}
+
+export function isDishAntenna(antenna: AntennaModel): boolean {
+  return antenna.id.startsWith("discovery-dish");
 }

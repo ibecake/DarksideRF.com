@@ -63,13 +63,13 @@ export function ListenPage() {
       const ranked = pass
         ? satellite.transmitters.map((transmitter) => ({
             transmitter,
-            assessment: assess(transmitter, pass, profile.receiverIds, profile.antennaId),
+            assessment: assess(transmitter, pass, profile.receiverIds, profile.antennaIds),
           }))
         : [];
       const at = pass ? new Date(pass.aos) : new Date();
       const transmitter = headlineTransmitter(satellite, ranked, at);
       const assessment = ranked.find((item) => item.transmitter.id === transmitter?.id)?.assessment ?? null;
-      const receivable = satellite.transmitters.some((item) => stationCovers(profile.receiverIds, profile.antennaId, item.downlinkHz, item.mode));
+      const receivable = satellite.transmitters.some((item) => stationCovers(profile.receiverIds, profile.antennaIds, item.downlinkHz, item.mode));
       const suggested = transmitter ? simplestAntenna(transmitter.downlinkHz) : null;
       const event = liveEventFor(satellite.id, at);
       const status = stationStatus(satellite.id, new Date());
@@ -80,7 +80,7 @@ export function ListenPage() {
       if (b.pass) return 1;
       return a.satellite.name.localeCompare(b.satellite.name);
     });
-  }, [passes, profile.antennaId, profile.receiverIds, profile.timeZone]);
+  }, [passes, profile.antennaIds, profile.receiverIds, profile.timeZone]);
   const shown = useMemo(() => {
     const needle = query.trim().toLowerCase();
     return cards.filter((card) => {
@@ -163,9 +163,9 @@ export function ListenPage() {
               transmitters={card.satellite.transmitters}
               suitability={card.assessment?.suitability}
               receiverName={card.assessment?.receiver?.name ?? "No compatible receiver"}
-              antennaName={antennaById(profile.antennaId)?.name ?? "Antenna"}
+              antennaName={card.assessment?.antenna?.name ?? antennaById(profile.antennaIds[0])?.name ?? "Antenna"}
               suggested={card.suggested}
-              ownedAntenna={card.suggested?.id === profile.antennaId}
+              ownedAntenna={card.suggested ? profile.antennaIds.includes(card.suggested.id) : false}
               receivable={card.receivable}
               timeZone={profile.timeZone}
               minElevation={profile.minElevation}

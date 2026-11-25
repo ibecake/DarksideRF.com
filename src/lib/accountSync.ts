@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { normalizeProfile } from "./storage";
 import type { AlertPrefs, Profile, ReceptionLog, Reminder, Store } from "../types";
 
 interface StationRow {
@@ -80,7 +81,7 @@ export async function pullAccount(client: SupabaseClient, userId: string): Promi
   if (!stationRow && logRows.length === 0 && reminderRows.length === 0) return null;
   if (!stationRow) throw new Error("This account has logs but no station.");
   return {
-    profile: stationRow.profile,
+    profile: normalizeProfile(stationRow.profile ?? {}),
     watchlist: stationRow.watchlist ?? [],
     alerts: stationRow.alerts,
     logs: logRows.map(logFromRow).sort((a, b) => b.receivedAt.localeCompare(a.receivedAt)),
@@ -108,7 +109,7 @@ function mergeReminders(local: Reminder[], remote: Reminder[]): Reminder[] {
 export function mergeAccount(local: Store, remote: Store | null): Store {
   if (!remote) return local;
   return {
-    profile: remote.profile,
+    profile: normalizeProfile(remote.profile ?? {}),
     alerts: { ...local.alerts, ...remote.alerts },
     watchlist: [...new Set([...remote.watchlist, ...local.watchlist])],
     logs: mergeLogs(local.logs, remote.logs),

@@ -70,7 +70,7 @@ export function Shell() {
           <Link to="/my-equipment" className="profile-station">
             <strong>{store.profile.locationName}</strong>
             <span>
-              {store.profile.receiverIds.length} receiver{store.profile.receiverIds.length === 1 ? "" : "s"} · min {store.profile.minElevation}°
+              {store.profile.receiverIds.length} receiver{store.profile.receiverIds.length === 1 ? "" : "s"} · {store.profile.antennaIds.length} antenna{store.profile.antennaIds.length === 1 ? "" : "s"} · min {store.profile.minElevation}°
             </span>
           </Link>
           <div className="profile-actions">

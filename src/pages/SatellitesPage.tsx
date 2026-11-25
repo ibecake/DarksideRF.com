@@ -66,8 +66,8 @@ export function SatellitesPage() {
       <ul className="directory">
         {shown.map((satellite) => {
           const collected = store.logs.some((log) => log.satelliteId === satellite.id);
-          const primary = satellite.transmitters.find((item) => stationCovers(store.profile.receiverIds, store.profile.antennaId, item.downlinkHz, item.mode)) ?? satellite.transmitters[0];
-          const receivable = satellite.transmitters.some((item) => stationCovers(store.profile.receiverIds, store.profile.antennaId, item.downlinkHz, item.mode));
+          const primary = satellite.transmitters.find((item) => stationCovers(store.profile.receiverIds, store.profile.antennaIds, item.downlinkHz, item.mode)) ?? satellite.transmitters[0];
+          const receivable = satellite.transmitters.some((item) => stationCovers(store.profile.receiverIds, store.profile.antennaIds, item.downlinkHz, item.mode));
           const suggested = primary ? simplestAntenna(primary.downlinkHz) : null;
           const heard = heardReport(satellite.id);
           return (
@@ -80,7 +80,7 @@ export function SatellitesPage() {
               <span className={`pill ${sourceValidity(satellite).tone}`}>{sourceValidity(satellite).label}</span>
               {heard && <span className="pill received">Heard {reportDate(heard.latest)}</span>}
               {suggested && (
-                <Link className={`pill ${store.profile.antennaId === suggested.id ? "decoded" : "missing"}`} to={`/antennas/${suggested.id}`}>
+                <Link className={`pill ${store.profile.antennaIds.includes(suggested.id) ? "decoded" : "missing"}`} to={`/antennas/${suggested.id}`}>
                   {suggested.name}
                 </Link>
               )}

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { satelliteById, satellites } from "../data/catalogue";
-import { antennas, receivers } from "../data/equipment";
+import { antennas, bestStationAntenna, receivers } from "../data/equipment";
 import { latestEventFor, liveEventFor } from "../data/events";
 import { formatFrequency, formatUtc, zonedParts, zonedTimeToUtc } from "../lib/format";
 import { eventOnlyTransmitter, orderedSignals, signalName } from "../lib/signals";
@@ -61,6 +61,10 @@ export function LogForm({ profile, initialSatelliteId, initialTransmitterId, ini
           const [date, time] = when.split("T");
           const [year, month, day] = date.split("-").map(Number);
           const [hour, minute] = time.split(":").map(Number);
+          const frequencyHz = transmitter?.downlinkHz ?? initialFrequencyHz ?? null;
+          const antenna = frequencyHz != null
+            ? bestStationAntenna(profile.antennaIds, frequencyHz)
+            : antennas.find((item) => profile.antennaIds.includes(item.id)) ?? null;
           onSave({
             satelliteId,
             transmitterId: transmitter?.id ?? null,
@@ -68,8 +72,8 @@ export function LogForm({ profile, initialSatelliteId, initialTransmitterId, ini
             receivedAt: zonedTimeToUtc(year, month, day, hour, minute, profile.timeZone).toISOString(),
             receptionStatus: status,
             receiverModelId: profile.receiverIds[0] ?? null,
-            antennaModelId: profile.antennaId,
-            frequencyHz: transmitter?.downlinkHz ?? initialFrequencyHz ?? null,
+            antennaModelId: antenna?.id ?? profile.antennaIds[0] ?? null,
+            frequencyHz,
             notes,
             quality: "",
             sourceType: historical ? "manual_historical" : "live_entry",
@@ -150,7 +154,10 @@ export function LogForm({ profile, initialSatelliteId, initialTransmitterId, ini
         </label>
         <p className="muted">
           Rig on this log: {receivers.find((item) => item.id === profile.receiverIds[0])?.name ?? "No receiver"} and{" "}
-          {antennas.find((item) => item.id === profile.antennaId)?.name}.
+          {(transmitter
+            ? bestStationAntenna(profile.antennaIds, transmitter.downlinkHz)
+            : antennas.find((item) => profile.antennaIds.includes(item.id))
+          )?.name ?? "No antenna"}.
         </p>
         <div className="row">
           <button type="submit">Save log</button>
