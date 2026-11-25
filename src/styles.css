@@ -604,6 +604,12 @@ button.pass-log {
   background: var(--panel);
 }
 .log-form label, .check { display: grid; gap: 0.25rem; }
+.log-form label.check-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+}
+.log-form label.check-row input { margin-top: 0.15rem; flex: none; }
 .log-form fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 0.4rem; }
 .log-form legend { padding: 0; color: var(--muted); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; }
 .signal-choice {
