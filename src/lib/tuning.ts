@@ -13,7 +13,7 @@ function nice(hz: number): number {
   return NICE_HZ.find((step) => step >= hz) ?? Math.round(hz);
 }
 
-function family(mode: string): string {
+export function modeFamily(mode: string): string {
   const name = mode.toUpperCase();
   if (name.startsWith("FMN")) return "FMN";
   if (name === "FM" || name.startsWith("FM ")) return "FM";
@@ -35,6 +35,28 @@ function family(mode: string): string {
   return "OTHER";
 }
 
+/** RF demodulation a receiver must support for this catalogue mode. SSTV/AFSK ride on narrow FM. */
+export function rfDemodForMode(mode: string | null): string | null {
+  if (!mode) return null;
+  switch (modeFamily(mode)) {
+    case "FM":
+    case "FMN":
+    case "SSTV":
+    case "AFSK":
+      return "FM";
+    case "USB":
+      return "USB";
+    case "LSB":
+      return "LSB";
+    case "CW":
+      return "CW";
+    case "AM":
+      return "AM";
+    default:
+      return null;
+  }
+}
+
 function digitalWidth(baud: number | null, fallback: number): number {
   if (!baud || baud <= 0) return fallback;
   return nice(Math.max(fallback, baud * 1.5));
@@ -44,7 +66,7 @@ export function suggestedTuning(transmitter: Transmitter): Tuning {
   const span = transmitter.downlinkHighHz && transmitter.downlinkHighHz > transmitter.downlinkHz + 500
     ? transmitter.downlinkHighHz - transmitter.downlinkHz
     : null;
-  const kind = family(transmitter.mode ?? "");
+  const kind = modeFamily(transmitter.mode ?? "");
   const preset = presetFor(kind, transmitter.baud);
   if (!preset) return { modulation: null, bandwidthHz: span, stepHz: span ? stepFor(span) : null, fromPassband: span !== null };
   if (!span) return { ...preset, fromPassband: false };

@@ -1,3 +1,4 @@
+import { rfDemodForMode } from "../lib/tuning";
 import type { AntennaModel, ReceiverModel } from "../types";
 
 const mhz = (value: number) => value * 1e6;
@@ -261,12 +262,11 @@ export function covers(bands: { minHz: number; maxHz: number }[], hz: number): b
 
 export function receiverSupportsMode(receiver: ReceiverModel, mode: string | null): boolean {
   if (!receiver.modes) return true;
-  if (!mode) return false;
-  const key = mode.trim().toUpperCase();
-  return receiver.modes.some((allowed) => {
-    const token = allowed.toUpperCase();
-    return key === token || key.startsWith(`${token} `) || key.startsWith(`${token}/`) || key.startsWith(`${token}-`);
-  });
+  const demod = rfDemodForMode(mode);
+  if (!demod) return false;
+  const allowed = new Set(receiver.modes.map((item) => item.toUpperCase()));
+  if (demod === "FM") return allowed.has("FM") || allowed.has("FMN");
+  return allowed.has(demod.toUpperCase());
 }
 
 export function receiverCovers(receiver: ReceiverModel, hz: number, mode: string | null): boolean {
