@@ -344,7 +344,9 @@ export function stationCovers(receiverIds: string[], antennaIds: string[], hz: n
 
 export function simplestAntenna(hz: number): AntennaModel {
   if (hz < 30e6) return antennaById("random-wire") ?? antennas[0];
-  if (hz >= mhz(1400) && hz <= mhz(1800)) return antennaById("discovery-dish-lband") ?? antennas[0];
+  const dish = antennas.find((antenna) => isDishAntenna(antenna) && covers(antenna.bands, hz))
+    ?? antennas.find((antenna) => isDishAntenna(antenna) && covers(antenna.marginalBands, hz));
+  if (dish) return dish;
   if (hz >= 1e9) return antennaById("discovery-dish-lband") ?? antennas[0];
   return antennaById("v-dipole") ?? antennas[0];
 }
