@@ -15,15 +15,16 @@ export const defaultProfile: Profile = {
 
 export function normalizeProfile(raw: Partial<Profile> & { antennaId?: string }): Profile {
   const { antennaId: legacyAntennaId, ...rest } = raw;
-  const antennaIds = raw.antennaIds?.length
+  const antennaIds = Array.isArray(raw.antennaIds)
     ? raw.antennaIds
     : legacyAntennaId
       ? [legacyAntennaId]
       : defaultProfile.antennaIds;
+  const receiverIds = Array.isArray(raw.receiverIds) ? raw.receiverIds : defaultProfile.receiverIds;
   return {
     ...defaultProfile,
     ...rest,
-    receiverIds: raw.receiverIds?.length ? raw.receiverIds : defaultProfile.receiverIds,
+    receiverIds,
     antennaIds,
   };
 }
