@@ -120,6 +120,20 @@ export const receivers: ReceiverModel[] = [
     source: "https://limemicro.com/products/boards/limesdr-mini/",
     listeningRank: 3,
   },
+  {
+    id: "handheld-fm-baofeng-class",
+    name: "Handheld FM transceiver (Baofeng-class)",
+    family: "Handheld",
+    bands: [
+      { minHz: mhz(136), maxHz: mhz(174) },
+      { minHz: mhz(400), maxHz: mhz(520) },
+    ],
+    bits: "FM demod",
+    notes:
+      "A stand-in for common dual-band HTs such as a Baofeng UV-9R / UV-5R and similar radios. This catalogue does not list every handheld on the market. Strong for ISS and amateur FM voice; awkward for SSTV or digital work unless you take audio out. Coverage below is the usual published VHF/UHF range for that class, not a guarantee every clone opens the same edges.",
+    source: "https://manuals.plus/baofeng/uv-9r-plus-portable-two-way-radio-manual",
+    listeningRank: 5,
+  },
 ];
 
 export const antennas: AntennaModel[] = [
@@ -195,6 +209,28 @@ export const antennas: AntennaModel[] = [
       "Space them about a fifth of a wavelength apart on a wooden or plastic boom. Metal boom mounting changes the lengths, so keep the first one simple.",
       "Feed the driven element the same way as the V-dipole: coax centre to one half, braid to the other.",
       "Point the director at the satellite and follow the pass. A Yagi aimed the wrong way hears less than a V-dipole.",
+    ],
+  },
+  {
+    id: "handheld-yagi",
+    name: "Handheld Yagi",
+    bands: [
+      { minHz: mhz(144), maxHz: mhz(148) },
+      { minHz: mhz(430), maxHz: mhz(440) },
+    ],
+    marginalBands: [{ minHz: mhz(136), maxHz: mhz(144) }],
+    polarisation: "Match the elements to the pass",
+    directionality: "A hand-held beam off the front",
+    notes:
+      "The classic portable satellite antenna: an Arrow-style or similar dual-band Yagi you walk with. Pair it with a Baofeng-class handheld for the ISS FM repeater. Weaker than a fixed long boom, and useless if you point it at the ground.",
+    buildSummary:
+      "A short dual-band Yagi you hold and aim. Buy one, or build a short 2 m / 70 cm boom you can carry with a handheld.",
+    buildSteps: [
+      "Use a commercial handheld satellite Yagi (Arrow-style and similar), or a short home-built boom with 2 m and 70 cm elements.",
+      "Fit an SMA or BNC jumper that matches your handheld. Keep the coax short.",
+      "For the ISS FM repeater, tune the handheld to the published downlink (currently 437.800 MHz down) and follow the pass with the short end of the boom.",
+      "Hold the boom so the elements match the pass polarisation, and keep swinging with the satellite. A handheld Yagi aimed wrong hears less than the rubber duck.",
+      "Weather-satellite APT near 137 MHz sits below the usual 2 m cut. Use a V-dipole there instead.",
     ],
   },
 ];

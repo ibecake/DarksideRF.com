@@ -9,7 +9,7 @@ export function MyEquipmentPage() {
     <section className="panel">
       <p className="eyebrow">Darkside RF / My station</p>
       <h1>Station</h1>
-      <p className="lede">Stored in this browser. The starting profile is Cork with a HackRF One, an SDRplay RSPduo, and a VHF/UHF whip.</p>
+      <p className="lede">Stored in this browser. The starting profile is Cork with a HackRF One, an SDRplay RSPduo, and a VHF/UHF whip. Add a Baofeng-class handheld and handheld Yagi if that is how you listen to the ISS repeater.</p>
       <form
         className="log-form"
         onSubmit={(event) => {
@@ -35,8 +35,9 @@ export function MyEquipmentPage() {
         <fieldset>
           <legend>Receivers</legend>
           {receivers.map((receiver) => (
-            <label key={receiver.id}>
-              <input type="checkbox" name="receiver" value={receiver.id} defaultChecked={profile.receiverIds.includes(receiver.id)} /> {receiver.name}
+            <label key={receiver.id} className="check-row">
+              <input type="checkbox" name="receiver" value={receiver.id} defaultChecked={profile.receiverIds.includes(receiver.id)} />
+              <span>{receiver.name}</span>
             </label>
           ))}
         </fieldset>
