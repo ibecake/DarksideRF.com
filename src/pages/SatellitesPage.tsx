@@ -66,8 +66,8 @@ export function SatellitesPage() {
       <ul className="directory">
         {shown.map((satellite) => {
           const collected = store.logs.some((log) => log.satelliteId === satellite.id);
-          const primary = satellite.transmitters.find((item) => stationCovers(store.profile.receiverIds, store.profile.antennaId, item.downlinkHz)) ?? satellite.transmitters[0];
-          const receivable = satellite.transmitters.some((item) => stationCovers(store.profile.receiverIds, store.profile.antennaId, item.downlinkHz));
+          const primary = satellite.transmitters.find((item) => stationCovers(store.profile.receiverIds, store.profile.antennaId, item.downlinkHz, item.mode)) ?? satellite.transmitters[0];
+          const receivable = satellite.transmitters.some((item) => stationCovers(store.profile.receiverIds, store.profile.antennaId, item.downlinkHz, item.mode));
           const suggested = primary ? simplestAntenna(primary.downlinkHz) : null;
           const heard = heardReport(satellite.id);
           return (

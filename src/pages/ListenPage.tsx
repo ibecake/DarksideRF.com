@@ -69,7 +69,7 @@ export function ListenPage() {
       const at = pass ? new Date(pass.aos) : new Date();
       const transmitter = headlineTransmitter(satellite, ranked, at);
       const assessment = ranked.find((item) => item.transmitter.id === transmitter?.id)?.assessment ?? null;
-      const receivable = satellite.transmitters.some((item) => stationCovers(profile.receiverIds, profile.antennaId, item.downlinkHz));
+      const receivable = satellite.transmitters.some((item) => stationCovers(profile.receiverIds, profile.antennaId, item.downlinkHz, item.mode));
       const suggested = transmitter ? simplestAntenna(transmitter.downlinkHz) : null;
       const event = liveEventFor(satellite.id, at);
       const status = stationStatus(satellite.id, new Date());
