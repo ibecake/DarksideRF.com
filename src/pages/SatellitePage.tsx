@@ -37,7 +37,7 @@ export function SatellitePage() {
   const validity = sourceValidity(satellite);
   const logs = store.logs.filter((log) => log.satelliteId === satellite.id);
   const watched = store.watchlist.includes(satellite.id);
-  const receivable = satellite.transmitters.some((item) => stationCovers(store.profile.receiverIds, store.profile.antennaId, item.downlinkHz));
+  const receivable = satellite.transmitters.some((item) => stationCovers(store.profile.receiverIds, store.profile.antennaId, item.downlinkHz, item.mode));
   const focus = headlineTransmitter(satellite, [], new Date()) ?? satellite.transmitters[0];
   const status = stationStatus(satellite.id);
   const finished = latestEventFor(satellite.id);
