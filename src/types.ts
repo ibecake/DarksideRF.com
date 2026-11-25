@@ -128,7 +128,7 @@ export interface Profile {
   heightKm: number;
   timeZone: string;
   receiverIds: string[];
-  antennaId: string;
+  antennaIds: string[];
   minElevation: number;
 }
 

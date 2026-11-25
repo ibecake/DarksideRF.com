@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
-import { antennas, receivers } from "../data/equipment";
+import { antennas, isDishAntenna, receivers } from "../data/equipment";
 import { useLogbook } from "../hooks/useStore";
+
+const wireAntennas = antennas.filter((antenna) => !isDishAntenna(antenna));
+const dishAntennas = antennas.filter((antenna) => isDishAntenna(antenna));
 
 export function MyEquipmentPage() {
   const { store, updateProfile } = useLogbook();
@@ -9,12 +12,15 @@ export function MyEquipmentPage() {
     <section className="panel">
       <p className="eyebrow">Darkside RF / My station</p>
       <h1>Station</h1>
-      <p className="lede">Stored in this browser. The starting profile is Cork with a HackRF One, an SDRplay RSPduo, and a VHF/UHF whip. Add a Baofeng-class handheld and handheld Yagi if that is how you listen to the ISS repeater.</p>
+      <p className="lede">
+        Stored in this browser. Pick every receiver and antenna you actually use — a handheld Yagi and a Discovery Dish can live on the same station.
+      </p>
       <form
         className="log-form"
         onSubmit={(event) => {
           event.preventDefault();
           const data = new FormData(event.currentTarget);
+          const antennaIds = antennas.filter((antenna) => data.getAll("antenna").includes(antenna.id)).map((antenna) => antenna.id);
           updateProfile({
             ...profile,
             locationName: String(data.get("locationName") || "Observer"),
@@ -23,7 +29,7 @@ export function MyEquipmentPage() {
             timeZone: String(data.get("timeZone") || "Europe/Dublin"),
             minElevation: Number(data.get("minElevation")),
             receiverIds: receivers.filter((receiver) => data.getAll("receiver").includes(receiver.id)).map((receiver) => receiver.id),
-            antennaId: String(data.get("antenna") || profile.antennaId),
+            antennaIds: antennaIds.length ? antennaIds : profile.antennaIds,
           });
         }}
       >
@@ -41,12 +47,26 @@ export function MyEquipmentPage() {
             </label>
           ))}
         </fieldset>
-        <label>
-          Antenna
-          <select name="antenna" defaultValue={profile.antennaId}>
-            {antennas.map((antenna) => <option key={antenna.id} value={antenna.id}>{antenna.name}</option>)}
-          </select>
-        </label>
+        <fieldset>
+          <legend>Antennas</legend>
+          <p className="muted">Select every antenna on the station. Coverage uses any selected antenna that reaches the downlink.</p>
+          {wireAntennas.map((antenna) => (
+            <label key={antenna.id} className="check-row">
+              <input type="checkbox" name="antenna" value={antenna.id} defaultChecked={profile.antennaIds.includes(antenna.id)} />
+              <span>{antenna.name}</span>
+            </label>
+          ))}
+        </fieldset>
+        <fieldset>
+          <legend>Dishes</legend>
+          <p className="muted">Discovery Dish feeds are listed separately — tick the feed you have fitted.</p>
+          {dishAntennas.map((antenna) => (
+            <label key={antenna.id} className="check-row">
+              <input type="checkbox" name="antenna" value={antenna.id} defaultChecked={profile.antennaIds.includes(antenna.id)} />
+              <span>{antenna.name}</span>
+            </label>
+          ))}
+        </fieldset>
         <button type="submit">Save station</button>
       </form>
       <p><Link to="/settings/alerts">Alert preferences</Link></p>

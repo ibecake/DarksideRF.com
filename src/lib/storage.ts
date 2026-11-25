@@ -9,9 +9,24 @@ export const defaultProfile: Profile = {
   heightKm: 0.02,
   timeZone: "Europe/Dublin",
   receiverIds: ["hackrf-one", "sdrplay-rspduo"],
-  antennaId: "vhf-uhf-whip",
+  antennaIds: ["vhf-uhf-whip"],
   minElevation: 10,
 };
+
+export function normalizeProfile(raw: Partial<Profile> & { antennaId?: string }): Profile {
+  const { antennaId: legacyAntennaId, ...rest } = raw;
+  const antennaIds = raw.antennaIds?.length
+    ? raw.antennaIds
+    : legacyAntennaId
+      ? [legacyAntennaId]
+      : defaultProfile.antennaIds;
+  return {
+    ...defaultProfile,
+    ...rest,
+    receiverIds: raw.receiverIds?.length ? raw.receiverIds : defaultProfile.receiverIds,
+    antennaIds,
+  };
+}
 
 const defaultAlerts: AlertPrefs = {
   browser: false,
@@ -38,7 +53,7 @@ export function loadStore(): Store {
     return {
       ...emptyStore(),
       ...parsed,
-      profile: { ...defaultProfile, ...parsed.profile },
+      profile: normalizeProfile(parsed.profile ?? {}),
       alerts: { ...defaultAlerts, ...parsed.alerts },
     };
   } catch {

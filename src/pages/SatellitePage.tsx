@@ -37,7 +37,7 @@ export function SatellitePage() {
   const validity = sourceValidity(satellite);
   const logs = store.logs.filter((log) => log.satelliteId === satellite.id);
   const watched = store.watchlist.includes(satellite.id);
-  const receivable = satellite.transmitters.some((item) => stationCovers(store.profile.receiverIds, store.profile.antennaId, item.downlinkHz, item.mode));
+  const receivable = satellite.transmitters.some((item) => stationCovers(store.profile.receiverIds, store.profile.antennaIds, item.downlinkHz, item.mode));
   const focus = headlineTransmitter(satellite, [], new Date()) ?? satellite.transmitters[0];
   const status = stationStatus(satellite.id);
   const finished = latestEventFor(satellite.id);
@@ -64,7 +64,7 @@ export function SatellitePage() {
       <div className="row">
         <span className={`pill ${receivable ? "decoded" : "missing"}`}>{receivable ? "Receivable" : "Not receivable"}</span>
         {suggested && (
-          <Link className={`pill ${store.profile.antennaId === suggested.id ? "decoded" : "missing"}`} to={`/antennas/${suggested.id}`}>
+          <Link className={`pill ${store.profile.antennaIds.includes(suggested.id) ? "decoded" : "missing"}`} to={`/antennas/${suggested.id}`}>
             {suggested.name}
           </Link>
         )}

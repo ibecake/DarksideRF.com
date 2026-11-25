@@ -12,7 +12,7 @@ export function AccountPage() {
   const [address, setAddress] = useState("");
   const achievements = achievementsFor(store.logs);
   const collected = collectedSatelliteIds(store.logs);
-  const antenna = antennaById(store.profile.antennaId);
+  const antennaNames = store.profile.antennaIds.map((id) => antennaById(id)?.name).filter(Boolean);
   const receivers = store.profile.receiverIds.map((id) => receiverById(id)?.name).filter(Boolean);
 
   return (
@@ -27,7 +27,7 @@ export function AccountPage() {
           {store.profile.latitude.toFixed(4)}, {store.profile.longitude.toFixed(4)} · {store.profile.timeZone}
         </p>
         <p className="muted">
-          {receivers.join(", ") || "No receivers"} · {antenna?.name ?? "Antenna"} · min elevation {store.profile.minElevation}°
+          {receivers.join(", ") || "No receivers"} · {antennaNames.join(", ") || "No antennas"} · min elevation {store.profile.minElevation}°
         </p>
         <div className="row">
           <Link to="/my-equipment">Edit station</Link>
