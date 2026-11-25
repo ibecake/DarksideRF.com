@@ -84,6 +84,8 @@ export interface ReceiverModel {
   notes: string;
   source: string;
   listeningRank: number;
+  /** Demod modes this radio can use. null means an SDR / software can take any mode in band. */
+  modes: string[] | null;
 }
 
 export interface AntennaModel {

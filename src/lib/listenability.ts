@@ -1,4 +1,4 @@
-import { antennaById, covers, receiverById } from "../data/equipment";
+import { antennaById, covers, receiverById, receiverSupportsMode } from "../data/equipment";
 import type { PassPrediction, ReceiverModel, Suitability, Transmitter } from "../types";
 
 export interface GearMatch {
@@ -51,12 +51,15 @@ export function assess(
   const antenna = antennaById(antennaId);
   const antennaCovers = antenna ? covers(antenna.bands, transmitter.downlinkHz) : false;
   const antennaMarginal = antenna ? covers(antenna.marginalBands, transmitter.downlinkHz) : false;
-  const capable = receiverIds
+  const inBand = receiverIds
     .map((id) => receiverById(id))
     .filter((receiver): receiver is ReceiverModel => Boolean(receiver))
-    .filter((receiver) => covers(receiver.bands, transmitter.downlinkHz))
+    .filter((receiver) => covers(receiver.bands, transmitter.downlinkHz));
+  const capable = inBand
+    .filter((receiver) => receiverSupportsMode(receiver, transmitter.mode))
     .sort((a, b) => b.listeningRank - a.listeningRank);
   const receiver = capable[0] ?? null;
+  const blockedByMode = !receiver && inBand.length > 0;
   const gearScore = !receiver || (!antennaCovers && !antennaMarginal) ? 0 : antennaCovers ? 1 : 0.55;
   const updatedAgeDays = (Date.now() - new Date(transmitter.updated).getTime()) / 86_400_000;
   const activity = transmitter.alive && transmitter.citation.startsWith("http") ? (updatedAgeDays > 800 ? 0.65 : 1) : 0.35;
@@ -64,9 +67,14 @@ export function assess(
   const orbit = pass.orbitAgeDays <= 3 ? 1 : pass.orbitAgeDays <= 10 ? 0.6 : 0.2;
   const practical = modePracticality(transmitter.mode);
   const score = activity * 0.3 + gearScore * 0.25 + geometry * 0.2 + practical * 0.15 + orbit * 0.1;
+  const receiverReason = receiver
+    ? `${receiver.name} covers this frequency and mode.`
+    : blockedByMode
+      ? `A selected receiver reaches this frequency, but none demodulate ${transmitter.mode ?? "this mode"}.`
+      : "None of the selected receivers cover this frequency.";
   const reasons = [
     transmitter.alive ? "SatNOGS lists this downlink as active." : "SatNOGS does not currently mark this downlink alive.",
-    receiver ? `${receiver.name} covers this frequency.` : "None of the selected receivers cover this frequency.",
+    receiverReason,
     antennaCovers ? "The selected antenna is in a plausible band." : antennaMarginal ? "The antenna is only marginal here." : "The selected antenna is outside its useful bands.",
   ];
   if (pass.orbitAgeDays > 10) reasons.push("Orbital elements are getting old, so the pass time is less trustworthy.");

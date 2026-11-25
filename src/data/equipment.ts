@@ -13,6 +13,7 @@ export const receivers: ReceiverModel[] = [
     notes: "R820T2 tuner. Direct sampling can be switched on for HF, but that is not a dedicated HF front end.",
     source: "https://www.rtl-sdr.com/rtl-sdr-blog-v-3-dongles-user-guide/",
     listeningRank: 4,
+    modes: null,
   },
   {
     id: "rtlsdr-blog-v4",
@@ -23,6 +24,7 @@ export const receivers: ReceiverModel[] = [
     notes: "Built-in upconverter for HF. Still an 8-bit receiver.",
     source: "https://www.rtl-sdr.com/v4/",
     listeningRank: 4,
+    modes: null,
   },
   {
     id: "nooelec-smart-v5",
@@ -33,6 +35,7 @@ export const receivers: ReceiverModel[] = [
     notes: "R820T2-class dongle. Exact edges vary by board; treat the edges as approximate.",
     source: "https://www.nooelec.com/store/sdr/sdr-receivers/nesdr-smart-sdr.html",
     listeningRank: 3,
+    modes: null,
   },
   {
     id: "hackrf-one",
@@ -43,6 +46,7 @@ export const receivers: ReceiverModel[] = [
     notes: "Half-duplex. Wide coverage, with a higher noise floor than a dedicated VHF receiver.",
     source: "https://hackrf.readthedocs.io/en/latest/hackrf_one.html",
     listeningRank: 2,
+    modes: null,
   },
   {
     id: "sdrplay-rspduo",
@@ -53,6 +57,7 @@ export const receivers: ReceiverModel[] = [
     notes: "Dual-tuner receiver. Advertised coverage still depends on the antenna in front of it.",
     source: "https://www.sdrplay.com/rspduo/",
     listeningRank: 6,
+    modes: null,
   },
   {
     id: "sdrplay-rsp1a",
@@ -63,6 +68,7 @@ export const receivers: ReceiverModel[] = [
     notes: "Single-tuner SDRplay. Same caution: frequency coverage is not the same as a usable signal.",
     source: "https://www.sdrplay.com/rsp1a/",
     listeningRank: 6,
+    modes: null,
   },
   {
     id: "airspy-mini",
@@ -73,6 +79,7 @@ export const receivers: ReceiverModel[] = [
     notes: "No HF coverage without an external converter.",
     source: "https://airspy.com/airspy-mini/",
     listeningRank: 5,
+    modes: null,
   },
   {
     id: "airspy-hf-discovery",
@@ -86,6 +93,7 @@ export const receivers: ReceiverModel[] = [
     notes: "Strong for HF and VHF. There is a gap from 31 to 60 MHz, and no UHF coverage.",
     source: "https://airspy.com/airspy-hf-discovery/",
     listeningRank: 7,
+    modes: null,
   },
   {
     id: "funcube-pro-plus",
@@ -99,6 +107,7 @@ export const receivers: ReceiverModel[] = [
     notes: "Gap between 240 and 420 MHz.",
     source: "http://www.funcubedongle.com/?page_id=1201",
     listeningRank: 5,
+    modes: null,
   },
   {
     id: "adalm-pluto",
@@ -109,6 +118,7 @@ export const receivers: ReceiverModel[] = [
     notes: "Stock tuning range. Software extensions exist, but this profile uses the published stock limits. No 2 m coverage.",
     source: "https://www.analog.com/en/resources/evaluation-hardware-and-software/evaluation-boards-kits/adalm-pluto.html",
     listeningRank: 3,
+    modes: null,
   },
   {
     id: "limesdr-mini",
@@ -119,6 +129,7 @@ export const receivers: ReceiverModel[] = [
     notes: "Wideband SDR. Performance at the band edges is not uniform.",
     source: "https://limemicro.com/products/boards/limesdr-mini/",
     listeningRank: 3,
+    modes: null,
   },
   {
     id: "handheld-fm-baofeng-class",
@@ -133,6 +144,7 @@ export const receivers: ReceiverModel[] = [
       "A stand-in for common dual-band HTs such as a Baofeng UV-9R / UV-5R and similar radios. This catalogue does not list every handheld on the market. Strong for ISS and amateur FM voice; awkward for SSTV or digital work unless you take audio out. Coverage below is the usual published VHF/UHF range for that class, not a guarantee every clone opens the same edges.",
     source: "https://manuals.plus/baofeng/uv-9r-plus-portable-two-way-radio-manual",
     listeningRank: 5,
+    modes: ["FM", "FMN"],
   },
 ];
 
@@ -247,11 +259,25 @@ export function covers(bands: { minHz: number; maxHz: number }[], hz: number): b
   return bands.some((band) => hz >= band.minHz && hz <= band.maxHz);
 }
 
-export function stationCovers(receiverIds: string[], antennaId: string, hz: number): boolean {
+export function receiverSupportsMode(receiver: ReceiverModel, mode: string | null): boolean {
+  if (!receiver.modes) return true;
+  if (!mode) return false;
+  const key = mode.trim().toUpperCase();
+  return receiver.modes.some((allowed) => {
+    const token = allowed.toUpperCase();
+    return key === token || key.startsWith(`${token} `) || key.startsWith(`${token}/`) || key.startsWith(`${token}-`);
+  });
+}
+
+export function receiverCovers(receiver: ReceiverModel, hz: number, mode: string | null): boolean {
+  return covers(receiver.bands, hz) && receiverSupportsMode(receiver, mode);
+}
+
+export function stationCovers(receiverIds: string[], antennaId: string, hz: number, mode: string | null = null): boolean {
   const antenna = antennaById(antennaId);
   const receiverOk = receiverIds.some((id) => {
     const receiver = receiverById(id);
-    return receiver ? covers(receiver.bands, hz) : false;
+    return receiver ? receiverCovers(receiver, hz, mode) : false;
   });
   const antennaOk = antenna ? covers(antenna.bands, hz) : false;
   return receiverOk && antennaOk;
