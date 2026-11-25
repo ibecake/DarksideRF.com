@@ -5,7 +5,8 @@ import { LogForm } from "../components/LogForm";
 import { satelliteById } from "../data/catalogue";
 import { useLogbook } from "../hooks/useStore";
 import { achievementsFor, collectedSatelliteIds, decodedSatelliteIds, sstvDecodeCount } from "../lib/collection";
-import { formatWhen } from "../lib/format";
+import { formatFrequency, formatWhen } from "../lib/format";
+import { signalName } from "../lib/signals";
 import type { ReceptionLog } from "../types";
 
 const exampleCards = [
@@ -44,7 +45,7 @@ export function CollectionPage() {
       </div>
       <div className="section-line">
         <h2>My satellite collection</h2>
-        {example ? <span className="example-tag">Example</span> : <button type="button" className="ghost" onClick={() => setLogging(true)}>Log reception</button>}
+        {example ? <span className="example-tag">Example</span> : <button type="button" onClick={() => setLogging(true)}>I heard a signal</button>}
       </div>
       {example ? (
         <>
@@ -122,7 +123,13 @@ function LogRow({ log, timeZone, onStatus, onDelete }: { log: ReceptionLog; time
     <li>
       <div>
         <strong>{satellite?.name ?? log.satelliteId}</strong>
-        <span>{formatWhen(log.receivedAt, timeZone)} · {log.verificationState.replaceAll("_", " ")} · {log.sourceType === "manual_historical" ? "historical" : "live entry"}</span>
+        <span>
+          {(() => {
+            const heard = satellite?.transmitters.find((item) => item.id === log.transmitterId);
+            return heard ? `${signalName(heard)} · ${formatFrequency(log.frequencyHz ?? heard.downlinkHz)} · ` : "";
+          })()}
+          {formatWhen(log.receivedAt, timeZone)} · {log.receptionStatus === "decoded" ? "decoded" : "heard"} · {log.sourceType === "manual_historical" ? "historical" : "live entry"}
+        </span>
       </div>
       <div className="row">
         <button type="button" className="ghost" onClick={() => onStatus(log.receptionStatus === "decoded" ? "received" : "decoded")}>

@@ -37,6 +37,19 @@ export function formatWhen(iso: string, timeZone: string): string {
   }).format(new Date(iso));
 }
 
+export function formatUtc(iso: string): string {
+  return new Intl.DateTimeFormat("en-IE", {
+    timeZone: "UTC",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+    timeZoneName: "short",
+  }).format(new Date(iso));
+}
+
 export function formatClock(iso: string, timeZone: string): string {
   return new Intl.DateTimeFormat("en-IE", {
     timeZone,

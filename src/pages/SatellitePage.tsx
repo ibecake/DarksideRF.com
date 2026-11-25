@@ -7,9 +7,12 @@ import { TuningStrip } from "../components/TuningStrip";
 import { heardReport, reportDate } from "../data/activity";
 import { catalogue, satelliteById } from "../data/catalogue";
 import { simplestAntenna, stationCovers } from "../data/equipment";
+import { latestEventFor, liveEventFor } from "../data/events";
+import { stationStatus } from "../data/operations";
 import { usePasses } from "../hooks/usePasses";
 import { useLogbook } from "../hooks/useStore";
-import { formatWhen } from "../lib/format";
+import { formatFrequency, formatUtc, formatWhen } from "../lib/format";
+import { eventOnlyTransmitter, headlineTransmitter, signalName } from "../lib/signals";
 import { tleFor } from "../lib/tle";
 import { sourceValidity } from "../lib/validity";
 
@@ -35,7 +38,9 @@ export function SatellitePage() {
   const logs = store.logs.filter((log) => log.satelliteId === satellite.id);
   const watched = store.watchlist.includes(satellite.id);
   const receivable = satellite.transmitters.some((item) => stationCovers(store.profile.receiverIds, store.profile.antennaId, item.downlinkHz));
-  const focus = satellite.transmitters.find((item) => stationCovers(store.profile.receiverIds, store.profile.antennaId, item.downlinkHz)) ?? satellite.transmitters[0];
+  const focus = headlineTransmitter(satellite, [], new Date()) ?? satellite.transmitters[0];
+  const status = stationStatus(satellite.id);
+  const finished = latestEventFor(satellite.id);
   const suggested = focus ? simplestAntenna(focus.downlinkHz) : null;
   const nextPass = passes[0];
 
@@ -50,6 +55,11 @@ export function SatellitePage() {
       <p>{validity.detail}</p>
       {heard && (
         <p className="muted">AMSAT listeners reported {heard.report} on {reportDate(heard.latest)}. Source: the AMSAT status rollup for the previous 30 days.</p>
+      )}
+      {status && (
+        <p className="event-note">
+          {status.detail} <a href={status.sourceUrl}>{status.sourceName}</a>
+        </p>
       )}
       <div className="row">
         <span className={`pill ${receivable ? "decoded" : "missing"}`}>{receivable ? "Receivable" : "Not receivable"}</span>
@@ -69,7 +79,7 @@ export function SatellitePage() {
         />
       )}
       <div className="row">
-        <button type="button" onClick={() => { setTransmitterId(satellite.transmitters[0]?.id ?? null); setLogging(true); }}>Log reception</button>
+        <button type="button" onClick={() => { setTransmitterId(focus?.id ?? null); setLogging(true); }}>I heard this</button>
         <button type="button" className="ghost" onClick={() => toggleWatch(satellite.id)}>{watched ? "On watchlist" : "Add to watchlist"}</button>
       </div>
       <h2>Downlinks</h2>
@@ -80,9 +90,12 @@ export function SatellitePage() {
             <div>
               <TuningStrip transmitter={transmitter} />
               <span>{transmitter.description}</span>
+              {eventOnlyTransmitter(transmitter) && !liveEventFor(satellite.id, new Date()) && (
+                <span>{finished?.endAt ? `SSTV, not scheduled. Last series ended ${formatUtc(finished.endAt)}.` : "SSTV, only during an announced series."}</span>
+              )}
               <a href={transmitter.citation}>Source</a>
             </div>
-            <button type="button" className="ghost" onClick={() => { setTransmitterId(transmitter.id); setLogging(true); }}>Log this</button>
+            <button type="button" className="ghost" onClick={() => { setTransmitterId(transmitter.id); setLogging(true); }}>I heard this</button>
           </li>
         ))}
       </ul>
@@ -106,7 +119,18 @@ export function SatellitePage() {
       {logs.length === 0 && <p className="muted">{watched ? "Discovered, not received." : "Not collected."}</p>}
       <ul className="logs">
         {logs.map((log) => (
-          <li key={log.id}><div><strong>{log.receptionStatus}</strong><span>{formatWhen(log.receivedAt, store.profile.timeZone)}</span></div></li>
+          <li key={log.id}>
+            <div>
+              <strong>{log.receptionStatus === "decoded" ? "Decoded" : "Heard"}</strong>
+              <span>
+                {(() => {
+                  const heardTx = satellite.transmitters.find((item) => item.id === log.transmitterId);
+                  return heardTx ? `${signalName(heardTx)} · ${formatFrequency(log.frequencyHz ?? heardTx.downlinkHz)} · ` : "";
+                })()}
+                {formatWhen(log.receivedAt, store.profile.timeZone)}
+              </span>
+            </div>
+          </li>
         ))}
       </ul>
       {logging && (

@@ -16,7 +16,16 @@ export const sources: MonitorSource[] = [
     category: "official",
     language: "en",
     schedule: "Check about every 12 hours",
-    notes: "Date windows for ISS SSTV. Exact on-air times are often published later.",
+    notes: "Finished and announced ISS SSTV series. The latest published series included exact UTC times.",
+  },
+  {
+    id: "ariss-station-status",
+    name: "ARISS current status of ISS stations",
+    url: "https://www.ariss.org/current-status-of-iss-stations.html",
+    category: "official",
+    language: "en",
+    schedule: "Check about every 12 hours",
+    notes: "Which ISS radio is in voice repeater, packet, or off. A listed mode is the published configuration, not a measurement from this station.",
   },
   {
     id: "amsat-status",

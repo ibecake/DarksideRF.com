@@ -106,7 +106,8 @@ create policy "published events are public" on public.activity_events
   using (published);
 
 insert into public.sources (id, name, url, category, trust_tier, language, poll_interval_hours, notes) values
-  ('ariss-sstv', 'ARISS upcoming SSTV', 'https://www.ariss.org/upcoming-sstv-events.html', 'official', 'official', 'en', 12, 'Date windows for ISS SSTV. Exact on-air times are often published later.'),
+  ('ariss-sstv', 'ARISS upcoming SSTV', 'https://www.ariss.org/upcoming-sstv-events.html', 'official', 'official', 'en', 12, 'Finished and announced ISS SSTV series. The latest published series included exact UTC times.'),
+  ('ariss-station-status', 'ARISS current status of ISS stations', 'https://www.ariss.org/current-status-of-iss-stations.html', 'official', 'official', 'en', 12, 'Which ISS radio is in voice repeater, packet, or off. A listed mode is the published configuration, not a measurement from this station.'),
   ('amsat-status', 'AMSAT status summary', 'https://www.amsat.org/status/api/v1/summary.php?hours=720', 'specialist', 'specialist', 'en', 24, 'Heard, telemetry-only, and not-heard reports. A report is not a pass.'),
   ('amsat-uk', 'AMSAT-UK', 'https://amsat-uk.org/', 'specialist', 'specialist', 'en', 24, 'News and activation notes from AMSAT-UK.'),
   ('ucs-satellite-database', 'UCS Satellite Database', 'https://www.ucs.org/media/11493', 'specialist', 'specialist', 'en', 8760, 'Text file of the 1 May 2023 edition. Records mass, power, launch date, expected lifetime, apogee, perigee, inclination, period, purpose, and who owns, operates, and built the satellite. It does not list a downlink.')
@@ -115,17 +116,17 @@ on conflict (id) do nothing;
 insert into public.activity_events (
   id, event_type, title, satellite_id, frequency_hz, mode, start_date, end_date, time_precision, status, pattern, summary, published
 ) values (
-  'ariss-sstv-series-34',
+  'ariss-sstv-series-35',
   'sstv',
-  'ARISS SSTV Series 34 — ARISS Hardware',
+  'ARISS SSTV Series 35 — Space Memories',
   'iss',
   437550000,
   'SSTV Robot 36',
-  '2026-10-22',
-  '2026-10-25',
-  'date',
-  'announced',
+  '2026-11-09',
+  '2026-11-16',
+  'instant',
+  'finished',
   'About 36 seconds on, then about two minutes off.',
-  'ARISS has announced the dates for Expedition 75 Series 34 and the downlink used for these events. Exact UTC start and end times were still to be updated on the ARISS page. These dates do not mean the transmitter is on for the whole window.',
+  'ARISS published this series from 9 November 2026 17:45 UTC until 16 November 2026 08:15 UTC, on 437.550 MHz in Robot 36. The upcoming-events page lists nothing after it.',
   true
 ) on conflict (id) do nothing;

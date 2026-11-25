@@ -326,10 +326,26 @@ button.pass-more {
   border-radius: 0;
   font-size: 0.82rem;
 }
+button.pass-log {
+  background: #f3f3f3;
+  color: #111;
+  border-radius: 999px;
+  padding: 0.45rem 0.85rem;
+  font-size: 0.95rem;
+}
 
 .pass p, .guide { margin: 0.35rem 0; }
 .when { font-size: 1.05rem; }
-.event-note { color: #e7c98a; }
+.event-note, .status-note { color: #e7c98a; }
+.status-note { margin: 0.35rem 0 0; }
+.saved-note {
+  border: 1px solid #245c3a;
+  background: var(--green-bg);
+  color: var(--ink);
+  border-radius: 12px;
+  padding: 0.7rem 0.85rem;
+}
+.saved-note a { color: var(--green); }
 
 .directory, .logs, .transmitters, .achievements { list-style: none; padding: 0; margin: 0.8rem 0; }
 .directory li, .logs li, .transmitters li {
@@ -344,9 +360,39 @@ button.pass-more {
 .directory a, .directory li > div, .transmitters div, .logs div { display: grid; gap: 0.25rem; text-decoration: none; }
 .directory span, .logs span, .transmitters span { color: var(--muted); font-size: 0.88rem; }
 
-.log-form { display: grid; gap: 0.7rem; }
+.log-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: end center;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.72);
+}
+.log-form {
+  display: grid;
+  gap: 0.7rem;
+  width: min(34rem, 100%);
+  max-height: min(92vh, 44rem);
+  margin: 0;
+  overflow: auto;
+  background: var(--panel);
+}
 .log-form label, .check { display: grid; gap: 0.25rem; }
-.log-form fieldset { border: 0; padding: 0; display: grid; gap: 0.35rem; }
+.log-form fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 0.4rem; }
+.log-form legend { padding: 0; color: var(--muted); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.signal-choice {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.55rem;
+  align-items: start;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0.55rem 0.65rem;
+  background: #111;
+}
+.signal-choice:has(input:checked) { border-color: var(--green); }
+.signal-choice input { margin-top: 0.2rem; }
 input, select, textarea {
   background: #111;
   border: 1px solid var(--line);
@@ -374,7 +420,8 @@ input, select, textarea {
   .pass .row { display: grid; grid-template-columns: 1fr 1fr; }
   .pass .row button { width: 100%; min-height: 2.6rem; font-size: 0.86rem; padding: 0.4rem 0.3rem; }
   .pass .row.pass-actions { display: flex; }
-  .pass .row.pass-actions button { width: auto; min-height: 0; padding: 0.15rem 0; font-size: 0.82rem; }
+  .pass .row.pass-actions button.pass-more { width: auto; min-height: 0; padding: 0.15rem 0; font-size: 0.82rem; }
+  .pass .row.pass-actions button.pass-log { width: 100%; min-height: 2.6rem; padding: 0.45rem 0.8rem; font-size: 0.95rem; }
   .tune { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .pass-layout { justify-items: stretch; }
   .sky { text-align: center; }

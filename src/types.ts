@@ -182,8 +182,10 @@ export interface ListeningEvent {
   mode: string;
   startDate: string;
   endDate: string;
-  timePrecision: "date";
-  status: "announced";
+  startAt: string | null;
+  endAt: string | null;
+  timePrecision: "date" | "instant";
+  status: "announced" | "finished";
   pattern: string;
   summary: string;
   sources: { name: string; url: string }[];

@@ -4,16 +4,18 @@ import { LogForm } from "../components/LogForm";
 import { PassSky } from "../components/PassSky";
 import { TuningStrip } from "../components/TuningStrip";
 import { heardReport, reportDate } from "../data/activity";
-import { events } from "../data/events";
+import { liveEventFor } from "../data/events";
 import { satelliteById, satellites } from "../data/catalogue";
 import { antennaById, simplestAntenna, stationCovers } from "../data/equipment";
+import { stationStatus } from "../data/operations";
 import { usePasses } from "../hooks/usePasses";
 import { useLogbook } from "../hooks/useStore";
-import { civilDate, dopplerShiftHz, formatAzimuth, formatClock, formatDuration, formatElevation, formatFrequency, formatWhen, zonedParts, zonedTimeToUtc } from "../lib/format";
+import { dopplerShiftHz, formatAzimuth, formatClock, formatDuration, formatElevation, formatFrequency, formatWhen, zonedParts, zonedTimeToUtc } from "../lib/format";
 import { expectedOutcome } from "../lib/outcome";
+import { eventOnlyTransmitter, headlineTransmitter, signalName } from "../lib/signals";
 import { tleFor } from "../lib/tle";
 import { sourceValidity, type SourceValidity } from "../lib/validity";
-import { assess, bestTransmitter } from "../lib/listenability";
+import { assess } from "../lib/listenability";
 import type { AntennaModel, PassPrediction, TimeWindow, Transmitter } from "../types";
 
 function rangeFor(window: TimeWindow, timeZone: string) {
@@ -40,6 +42,7 @@ export function ListenPage() {
   const [record, setRecord] = useState<"all" | SourceValidity["label"]>("all");
   const [query, setQuery] = useState("");
   const [logging, setLogging] = useState<{ satelliteId: string; transmitterId: string | null; eventId: string | null } | null>(null);
+  const [saved, setSaved] = useState<string | null>(null);
   const range = useMemo(() => rangeFor(window, profile.timeZone), [window, profile.timeZone]);
   const { passes, pending, completed, total } = usePasses({
     latitude: profile.latitude,
@@ -63,13 +66,14 @@ export function ListenPage() {
             assessment: assess(transmitter, pass, profile.receiverIds, profile.antennaId),
           }))
         : [];
-      const best = bestTransmitter(ranked);
-      const transmitter = best?.transmitter ?? satellite.transmitters[0] ?? null;
+      const at = pass ? new Date(pass.aos) : new Date();
+      const transmitter = headlineTransmitter(satellite, ranked, at);
+      const assessment = ranked.find((item) => item.transmitter.id === transmitter?.id)?.assessment ?? null;
       const receivable = satellite.transmitters.some((item) => stationCovers(profile.receiverIds, profile.antennaId, item.downlinkHz));
       const suggested = transmitter ? simplestAntenna(transmitter.downlinkHz) : null;
-      const date = pass ? civilDate(pass.aos, profile.timeZone) : "";
-      const event = pass ? events.find((item) => item.satelliteId === satellite.id && date >= item.startDate && date <= item.endDate) : undefined;
-      return { satellite, pass, transmitter, assessment: best?.assessment ?? null, receivable, suggested, event };
+      const event = liveEventFor(satellite.id, at);
+      const status = stationStatus(satellite.id, new Date());
+      return { satellite, pass, transmitter, assessment, receivable, suggested, event, status };
     }).sort((a, b) => {
       if (a.pass && b.pass) return a.pass.aos.localeCompare(b.pass.aos);
       if (a.pass) return -1;
@@ -143,6 +147,7 @@ export function ListenPage() {
           </button>
         ))}
       </div>
+      {saved && <p className="saved-note">{saved} <Link to="/collection">Open the logbook</Link></p>}
       {pending && <p className="muted">Calculating passes in this browser… {completed > 0 ? `${completed} of ${total}` : ""}</p>}
       {shown.length === 0 && <p className="muted">No satellites match this filter.</p>}
       <div className="stack">
@@ -165,6 +170,9 @@ export function ListenPage() {
               timeZone={profile.timeZone}
               minElevation={profile.minElevation}
               eventTitle={card.event?.title}
+              statusShort={card.status?.short}
+              statusDetail={card.status?.detail}
+              statusSource={card.status ? { name: card.status.sourceName, url: card.status.sourceUrl } : undefined}
               watched={store.watchlist.includes(card.satellite.id)}
               onWatch={() => toggleWatch(card.satellite.id)}
               onRemind={() => {
@@ -182,7 +190,12 @@ export function ListenPage() {
           initialSatelliteId={logging.satelliteId}
           initialTransmitterId={logging.transmitterId}
           initialEventId={logging.eventId}
-          onSave={addLog}
+          onSave={(draft) => {
+            addLog(draft);
+            const satellite = satelliteById(draft.satelliteId);
+            const heard = satellite?.transmitters.find((item) => item.id === draft.transmitterId);
+            setSaved(`Saved ${satellite?.name ?? "that reception"}${heard ? `: ${signalName(heard)} at ${formatFrequency(heard.downlinkHz)}` : ""}.`);
+          }}
           onClose={() => setLogging(null)}
         />
       )}
@@ -207,6 +220,9 @@ function PassCard(props: {
   timeZone: string;
   minElevation: number;
   eventTitle?: string;
+  statusShort?: string;
+  statusDetail?: string;
+  statusSource?: { name: string; url: string };
   watched: boolean;
   onWatch: () => void;
   onRemind: () => void;
@@ -216,7 +232,6 @@ function PassCard(props: {
   const [copied, setCopied] = useState(false);
   const shift = props.pass && props.transmitter ? dopplerShiftHz(props.transmitter.downlinkHz, props.pass.dopplerFactor) : null;
   const others = props.transmitters.filter((item) => item.id !== props.transmitter?.id);
-  const outcome = props.transmitter ? expectedOutcome(props.transmitter) : null;
   const heard = heardReport(props.satelliteId);
   const validity = sourceValidity(satelliteById(props.satelliteId)!);
   return (
@@ -244,7 +259,7 @@ function PassCard(props: {
         <p className="pass-facts">
           {props.transmitter && <span>{formatFrequency(props.transmitter.downlinkHz)}</span>}
           {props.transmitter?.mode && <span>{props.transmitter.mode}</span>}
-          {outcome && <span>{outcome.label}</span>}
+          {props.transmitter && <span>{signalName(props.transmitter)}</span>}
           {heard && <span>Heard {reportDate(heard.latest)}</span>}
         </p>
         {props.pass ? (
@@ -256,7 +271,9 @@ function PassCard(props: {
         ) : (
           <p className="muted">No pass above {props.minElevation}° in this window.</p>
         )}
+        {props.statusShort && <p className="status-note">{props.statusShort}</p>}
         <div className="row pass-actions">
+          <button type="button" className="pass-log" onClick={props.onLog}>I heard this</button>
           <button
             type="button"
             className="ghost pass-more"
@@ -300,7 +317,9 @@ function PassCard(props: {
         <p className="also muted">
           <span className="also-label">Also</span>
           {others.slice(0, 4).map((item) => (
-            <span key={item.id}>{formatFrequency(item.downlinkHz)} {expectedOutcome(item).label}</span>
+            <span key={item.id}>
+              {formatFrequency(item.downlinkHz)} {eventOnlyTransmitter(item) && !props.eventTitle ? "SSTV, not scheduled" : expectedOutcome(item).label}
+            </span>
           ))}
           {others.length > 4 && <span>+{others.length - 4} more</span>}
         </p>
@@ -341,7 +360,13 @@ function PassCard(props: {
               </div>
             )}
           </dl>
-          {props.eventTitle && <p className="event-note">Potential opportunity. {props.eventTitle} has dates, not an exact on-air time.</p>}
+          {props.statusDetail && (
+            <p className="event-note">
+              {props.statusDetail}{" "}
+              {props.statusSource && <a href={props.statusSource.url}>{props.statusSource.name}</a>}
+            </p>
+          )}
+          {props.eventTitle && <p className="event-note">Scheduled event. {props.eventTitle}. The published window is not a promise it is transmitting on every pass.</p>}
           {props.pass && props.pass.orbitAgeDays > 10 && <p className="event-note">Orbital elements are {Math.round(props.pass.orbitAgeDays)} days old. Do not treat this time as precise.</p>}
         </div>
         {props.pass && (
@@ -359,7 +384,6 @@ function PassCard(props: {
       <div className="row">
         <button type="button" className="ghost" onClick={props.onRemind} disabled={!props.pass}>Remind me</button>
         <button type="button" className="ghost" onClick={props.onWatch}>{props.watched ? "On watchlist" : "Add to watchlist"}</button>
-        <button type="button" className="ghost" onClick={props.onLog}>Log reception</button>
       </div>
       </div>}
     </article>
